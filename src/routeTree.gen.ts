@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WisdomRouteImport } from './routes/wisdom'
+import { Route as MatchRouteImport } from './routes/match'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -23,6 +24,11 @@ import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticat
 const WisdomRoute = WisdomRouteImport.update({
   id: '/wisdom',
   path: '/wisdom',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatchRoute = MatchRouteImport.update({
+  id: '/match',
+  path: '/match',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MapRoute = MapRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
+  '/match': typeof MatchRoute
   '/wisdom': typeof WisdomRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
+  '/match': typeof MatchRoute
   '/wisdom': typeof WisdomRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
+  '/match': typeof MatchRoute
   '/wisdom': typeof WisdomRoute
   '/_authenticated/messages': typeof AuthenticatedMessagesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
@@ -112,6 +121,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/directory'
     | '/map'
+    | '/match'
     | '/wisdom'
     | '/messages'
     | '/onboarding'
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/directory'
     | '/map'
+    | '/match'
     | '/wisdom'
     | '/messages'
     | '/onboarding'
@@ -135,6 +146,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/directory'
     | '/map'
+    | '/match'
     | '/wisdom'
     | '/_authenticated/messages'
     | '/_authenticated/onboarding'
@@ -148,6 +160,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DirectoryRoute: typeof DirectoryRoute
   MapRoute: typeof MapRoute
+  MatchRoute: typeof MatchRoute
   WisdomRoute: typeof WisdomRoute
   AlumniIdRoute: typeof AlumniIdRoute
 }
@@ -159,6 +172,13 @@ declare module '@tanstack/react-router' {
       path: '/wisdom'
       fullPath: '/wisdom'
       preLoaderRoute: typeof WisdomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/match': {
+      id: '/match'
+      path: '/match'
+      fullPath: '/match'
+      preLoaderRoute: typeof MatchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/map': {
@@ -248,6 +268,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DirectoryRoute: DirectoryRoute,
   MapRoute: MapRoute,
+  MatchRoute: MatchRoute,
   WisdomRoute: WisdomRoute,
   AlumniIdRoute: AlumniIdRoute,
 }
