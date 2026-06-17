@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getAlumnusById } from "@/lib/site.functions";
 import { FadeIn } from "@/components/FadeIn";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { ExternalLink, MapPin, Quote, ArrowLeft } from "lucide-react";
 
 const alumnusQuery = (id: string) =>
