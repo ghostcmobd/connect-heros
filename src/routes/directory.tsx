@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
-import { getDepartments, getDirectory, getHelpTags } from "@/lib/site.functions";
+import { getDirectory, getHelpTags } from "@/lib/site.functions";
+import { DEPARTMENTS } from "@/lib/departments";
 import { AlumniCard } from "@/components/AlumniCard";
 import { FadeIn } from "@/components/FadeIn";
 import { Search } from "lucide-react";
@@ -11,7 +12,6 @@ const directoryQuery = queryOptions({
   queryFn: () => getDirectory({ data: {} }),
 });
 const tagsQuery = queryOptions({ queryKey: ["help_tags"], queryFn: () => getHelpTags() });
-const departmentsQuery = queryOptions({ queryKey: ["departments"], queryFn: () => getDepartments() });
 
 export const Route = createFileRoute("/directory")({
   head: () => ({
@@ -25,7 +25,6 @@ export const Route = createFileRoute("/directory")({
   loader: ({ context }) => {
     context.queryClient.ensureQueryData(directoryQuery);
     context.queryClient.ensureQueryData(tagsQuery);
-    context.queryClient.ensureQueryData(departmentsQuery);
   },
   component: Directory,
 });
@@ -33,7 +32,6 @@ export const Route = createFileRoute("/directory")({
 function Directory() {
   const { data: all } = useSuspenseQuery(directoryQuery);
   const { data: tags } = useSuspenseQuery(tagsQuery);
-  const { data: departments } = useSuspenseQuery(departmentsQuery);
   const [q, setQ] = useState("");
   const [tag, setTag] = useState<string | null>(null);
   const [city, setCity] = useState("");
@@ -80,8 +78,12 @@ function Directory() {
             className="w-full rounded-full border border-border bg-background px-4 py-2.5 text-sm outline-none sm:w-56"
           >
             <option value="">All departments</option>
-            {departments.map((d) => (
-              <option key={d} value={d}>{d}</option>
+            {Object.entries(DEPARTMENTS).map(([group, items]) => (
+              <optgroup key={group} label={group}>
+                {items.map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </optgroup>
             ))}
           </select>
           <input
