@@ -79,10 +79,12 @@ export function SiteHeader() {
           ) : (
             <Link
               to="/auth"
-              className="btn-press inline-flex items-center gap-2 rounded-full border-2 border-[color:var(--gold)] bg-transparent px-4 py-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-primary hover:bg-[color:var(--gold)] hover:text-primary"
+              aria-label="Sign in with LinkedIn"
+              className="btn-press inline-flex items-center gap-2 rounded-full bg-[#0A66C2] px-3 py-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-white shadow-sm transition-colors hover:bg-[#004182] sm:px-4"
             >
-              <Linkedin className="h-4 w-4" />
-              Sign in with LinkedIn
+              <Linkedin className="h-4 w-4 shrink-0" fill="currentColor" stroke="none" />
+              <span className="hidden sm:inline">Sign in with LinkedIn</span>
+              <span className="sm:hidden">Sign in</span>
             </Link>
           )}
         </div>
