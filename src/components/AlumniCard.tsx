@@ -1,6 +1,6 @@
 import type { DirectoryItem } from "@/lib/site.functions";
 import { Link } from "@tanstack/react-router";
-import { MapPin, ExternalLink, Quote } from "lucide-react";
+import { MapPin, ExternalLink } from "lucide-react";
 
 export function AlumniCard({ item }: { item: DirectoryItem }) {
   const initials = item.full_name
@@ -30,14 +30,6 @@ export function AlumniCard({ item }: { item: DirectoryItem }) {
         </div>
       </div>
 
-      {item.message_to_juniors && (
-        <blockquote className="mt-5 rounded-xl border border-border bg-surface/60 p-4">
-          <Quote className="h-4 w-4 text-primary-soft" />
-          <p className="mt-1.5 text-sm italic leading-relaxed text-foreground">
-            “{item.message_to_juniors}”
-          </p>
-        </blockquote>
-      )}
 
       {item.tags.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-1.5">
