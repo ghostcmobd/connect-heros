@@ -48,10 +48,10 @@
   --radius: 1rem;
 
   /* Emerald Prestige palette */
-  --parchment: oklch(0.955 0.024 92);        /* #f5f0e0 */
-  --background: oklch(0.955 0.024 92);
-  --foreground: oklch(0.32 0.06 162);        /* #064e3b deep emerald */
-  --surface: oklch(0.985 0.012 92);          /* near-white parchment */
+  --parchment: oklch(0.985 0.008 100);       /* clean warm white */
+  --background: oklch(0.985 0.008 100);
+  --foreground: oklch(0.28 0.05 162);        /* deep emerald ink */
+  --surface: oklch(1 0 0);                   /* pure white surface */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.32 0.06 162);
   --popover: oklch(1 0 0);
@@ -65,7 +65,7 @@
   --secondary: oklch(0.50 0.10 162);         /* mid emerald */
   --secondary-foreground: oklch(0.955 0.024 92);
 
-  --muted: oklch(0.93 0.024 92);             /* parchment-tinted */
+  --muted: oklch(0.96 0.012 100);            /* subtle warm neutral */
   --muted-foreground: oklch(0.50 0.10 162);
 
   --accent: oklch(0.78 0.13 88);             /* #c9a84c gold */
