@@ -2,10 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { lazy, Suspense, useMemo } from "react";
 import { getDirectory, getMapPins, getWisdomFeed } from "@/lib/site.functions";
-import { AlumniCard } from "@/components/AlumniCard";
+import { ShufflingAlumni } from "@/components/ShufflingAlumni";
 import { WisdomCard } from "@/components/WisdomCard";
 import { FadeIn } from "@/components/FadeIn";
-import { ArrowRight, Linkedin, Loader2, MapPin, Users, MessageCircle } from "lucide-react";
+import { ArrowRight, Heart, Linkedin, Loader2, MapPin, Users, MessageCircle } from "lucide-react";
 
 const AlumniMap = lazy(() => import("@/components/AlumniMap").then((m) => ({ default: m.AlumniMap })));
 
@@ -37,80 +37,74 @@ function Home() {
   const { data: wisdom } = useSuspenseQuery(wisdomQuery);
 
   const totalAlumni = cities.reduce((s, c) => s + c.count, 0);
-  const featured = useMemo(() => alumni.slice(0, 6), [alumni]);
   const wisdomTeaser = useMemo(() => wisdom.slice(0, 6), [wisdom]);
 
   return (
     <div>
-      {/* Hero */}
+      {/* Hero with map */}
       <section className="relative overflow-hidden border-b border-border/60">
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute -top-40 left-1/4 h-[520px] w-[520px] rounded-full bg-[oklch(0.93_0.05_145)] blur-3xl" />
           <div className="absolute top-10 right-10 h-[380px] w-[380px] rounded-full bg-[oklch(0.94_0.04_85)] blur-3xl opacity-60" />
         </div>
-        <div className="mx-auto max-w-6xl px-5 pt-16 pb-10 sm:pt-24">
-          <div className="grid items-center gap-10 md:grid-cols-2">
-            <div>
-              <FadeIn>
-                <span className="pill mb-5">
-                  <Users className="h-3.5 w-3.5" /> {totalAlumni}+ alumni across {cities.length} cities
-                </span>
-              </FadeIn>
-              <FadeIn delay={0.05}>
-                <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-                  Talk to an alumnus who's <span className="text-primary">done what you want to do.</span>
-                </h1>
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <p className="mt-5 max-w-xl text-balance text-base text-muted-foreground sm:text-lg">
-                  Almanac connects current students with university alumni for resume reviews, mock interviews, and honest coffee chats — anywhere in the world.
-                </p>
-              </FadeIn>
-              <FadeIn delay={0.15}>
-                <div className="mt-7 flex flex-wrap items-center gap-3">
-                  <Link to="/directory" className="btn-press inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground">
-                    Browse alumni <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <Link to="/auth" className="btn-press inline-flex items-center gap-2 rounded-full bg-[#0a66c2] px-5 py-3 text-sm font-medium text-white shadow-sm hover:opacity-95">
-                    <Linkedin className="h-4 w-4" /> Sync with LinkedIn
-                  </Link>
-                </div>
-              </FadeIn>
+        <div className="mx-auto max-w-7xl px-5 pt-12 pb-8 sm:pt-16">
+          <FadeIn>
+            <span className="pill mb-4">
+              <Users className="h-3.5 w-3.5" /> {totalAlumni}+ alumni across {cities.length} cities
+            </span>
+          </FadeIn>
+          <FadeIn delay={0.05}>
+            <h1 className="text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              See where alumni are — and <span className="text-primary">reach the right one.</span>
+            </h1>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <p className="mt-4 max-w-2xl text-balance text-base text-muted-foreground sm:text-lg">
+              Almanac plots every alumnus on the map and surfaces the ones open to help current students. Browse the directory, filter by your department, or swipe through matches.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.15}>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Link to="/directory" className="btn-press inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground">
+                Browse alumni <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link to="/match" className="btn-press inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-3 text-sm font-medium hover:bg-surface">
+                <Heart className="h-4 w-4 text-primary" /> Swipe to match
+              </Link>
+              <Link to="/auth" className="btn-press inline-flex items-center gap-2 rounded-full bg-[#0a66c2] px-5 py-3 text-sm font-medium text-white shadow-sm hover:opacity-95">
+                <Linkedin className="h-4 w-4" /> Sync with LinkedIn
+              </Link>
             </div>
+          </FadeIn>
 
-            <FadeIn delay={0.1}>
-              <div className="soft-card overflow-hidden p-1.5">
-                <div className="h-[360px] overflow-hidden rounded-xl sm:h-[420px]">
-                  <Suspense fallback={<div className="grid h-full place-items-center bg-surface/40"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>}>
-                    <AlumniMap cities={cities} />
-                  </Suspense>
-                </div>
+          <FadeIn delay={0.2}>
+            <div className="soft-card mt-10 overflow-hidden p-1.5">
+              <div className="h-[420px] overflow-hidden rounded-2xl sm:h-[520px]">
+                <Suspense fallback={<div className="grid h-full place-items-center bg-surface/40"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>}>
+                  <AlumniMap cities={cities} />
+                </Suspense>
               </div>
-            </FadeIn>
-          </div>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
-      {/* Featured alumni */}
+      {/* Shuffling featured alumni */}
       <section className="mx-auto max-w-7xl px-5 py-16">
         <FadeIn>
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Alumni open to chat</h2>
-              <p className="mt-2 max-w-xl text-muted-foreground">Real graduates, real companies, real ways they want to help current students.</p>
+              <p className="mt-2 max-w-xl text-muted-foreground">
+                A fresh set every few seconds — real graduates, real companies, real ways they want to help.
+              </p>
             </div>
             <Link to="/directory" className="btn-press inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-surface">
               See all {alumni.length} alumni <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </FadeIn>
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {featured.map((item, i) => (
-            <FadeIn key={item.id} delay={Math.min(i * 0.04, 0.25)}>
-              <AlumniCard item={item} />
-            </FadeIn>
-          ))}
-        </div>
+        <ShufflingAlumni alumni={alumni} count={3} intervalMs={5000} />
       </section>
 
       {/* How it works */}
