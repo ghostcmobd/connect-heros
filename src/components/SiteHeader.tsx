@@ -78,6 +78,14 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           {userId ? (
             <>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="btn-press hidden items-center gap-1.5 rounded-full bg-[color:var(--gold)]/20 px-3 py-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-[color:var(--gold-deep)] hover:bg-[color:var(--gold)]/30 sm:inline-flex"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" /> Admin
+                </Link>
+              )}
               <Link
                 to="/profile"
                 className="btn-press hidden rounded-full border border-[color:var(--gold)]/40 bg-background px-4 py-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] hover:border-[color:var(--gold)] sm:inline-flex"
