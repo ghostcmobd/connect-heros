@@ -133,18 +133,6 @@ export const getDirectory = createServerFn({ method: "GET" })
     return mapped;
   });
 
-export const getDepartments = createServerFn({ method: "GET" }).handler(async (): Promise<string[]> => {
-  const sb = publicClient();
-  const { data, error } = await sb
-    .from("profiles")
-    .select("department")
-    .eq("is_published", true)
-    .not("department", "is", null);
-  if (error) throw error;
-  const set = new Set<string>();
-  for (const r of (data ?? []) as any[]) if (r.department) set.add(r.department);
-  return [...set].sort();
-});
 
 export const getAlumnusById = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
