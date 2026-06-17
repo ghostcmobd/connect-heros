@@ -19,7 +19,7 @@ export function SiteHeader() {
   const navItems = [
     { to: "/", label: "Home" },
     { to: "/directory", label: "Directory" },
-    { to: "/match", label: "Match" },
+    { to: "/companies", label: "Companies" },
     { to: "/map", label: "Map" },
     { to: "/wisdom", label: "Wisdom" },
   ] as const;
