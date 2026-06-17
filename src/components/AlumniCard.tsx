@@ -1,6 +1,6 @@
 import type { DirectoryItem } from "@/lib/site.functions";
 import { Link } from "@tanstack/react-router";
-import { MapPin, ExternalLink, Quote } from "lucide-react";
+import { MapPin, ExternalLink } from "lucide-react";
 
 export function AlumniCard({ item }: { item: DirectoryItem }) {
   const initials = item.full_name
