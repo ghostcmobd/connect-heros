@@ -39,32 +39,28 @@ function injectStyles() {
   .almanac-map .leaflet-tooltip { background: #064e3b; color: #f5f0e0; border: none; border-radius: 8px; padding: 6px 10px; box-shadow: 0 8px 24px -8px rgba(6,78,59,.4); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; }
   .almanac-map .leaflet-tooltip-top:before { border-top-color: #064e3b; }
   .alm-pin { position: relative; transform: translate(-50%, -100%); cursor: pointer; }
-  .alm-pin__shadow { position: absolute; left: 50%; bottom: -2px; transform: translateX(-50%); width: 60%; height: 8px; border-radius: 999px; background: radial-gradient(ellipse at center, rgba(6,78,59,.45) 0%, rgba(6,78,59,0) 70%); animation: alm-shadow 2.4s ease-in-out infinite; }
-  .alm-pin__pulse { position: absolute; left: 50%; bottom: 2px; transform: translateX(-50%); width: 56px; height: 24px; border-radius: 999px; background: radial-gradient(ellipse at center, rgba(201,168,76,.4) 0%, rgba(201,168,76,0) 70%); animation: alm-pulse 2.4s ease-out infinite; }
-  .alm-pin__pulse--lg { width: 84px; height: 32px; animation-duration: 3s; }
-  .alm-pin__body { position: relative; width: 100%; height: 100%; filter: drop-shadow(0 6px 8px rgba(6,78,59,.35)); transition: transform .25s cubic-bezier(.2,.7,.2,1); transform-origin: 50% 100%; animation: alm-bob 2.4s ease-in-out infinite; }
-  .alm-pin:hover .alm-pin__body { transform: translateY(-2px) scale(1.08); animation-play-state: paused; }
+  .alm-pin__shadow { position: absolute; left: 50%; bottom: -3px; transform: translateX(-50%); width: 55%; height: 6px; border-radius: 999px; background: radial-gradient(ellipse at center, rgba(6,78,59,.5) 0%, rgba(6,78,59,0) 70%); animation: alm-shadow 2.6s ease-in-out infinite; }
+  .alm-pin__pulse { position: absolute; left: 50%; bottom: -1px; transform: translateX(-50%); width: 38px; height: 14px; border-radius: 999px; background: radial-gradient(ellipse at center, rgba(201,168,76,.55) 0%, rgba(201,168,76,0) 70%); animation: alm-pulse 2.6s ease-out infinite; }
+  .alm-pin__pulse--lg { width: 56px; height: 20px; animation-duration: 3s; }
+  .alm-pin__body { position: relative; width: 100%; height: 100%; filter: drop-shadow(0 4px 6px rgba(6,78,59,.35)); transition: transform .25s cubic-bezier(.2,.7,.2,1); transform-origin: 50% 100%; animation: alm-bob 3s ease-in-out infinite; }
+  .alm-pin:hover .alm-pin__body { transform: translateY(-3px) scale(1.08); animation-play-state: paused; }
   .alm-pin__body svg { width: 100%; height: 100%; display: block; overflow: visible; }
-  .alm-pin__arm { transform-origin: 32px 32px; animation: alm-wave 1.6s ease-in-out infinite; }
-  .alm-pin:hover .alm-pin__arm { animation-duration: .7s; }
-  .alm-pin__badge { position: absolute; top: -3px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #c9a84c; color: #064e3b; font-weight: 800; font-size: 9px; line-height: 16px; text-align: center; border: 1.5px solid #064e3b; box-shadow: 0 1px 4px rgba(6,78,59,.4); font-family: 'Urbanist Variable', sans-serif; }
+  .alm-pin__count { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); color: #f5f0e0; font-weight: 800; font-size: 12px; line-height: 1; font-family: 'Urbanist Variable', sans-serif; letter-spacing: -.02em; pointer-events: none; text-shadow: 0 1px 2px rgba(6,78,59,.5); }
+  .alm-pin__count--lg { font-size: 15px; top: 24%; }
   @keyframes alm-pulse {
-    0%   { transform: translateX(-50%) scale(.4); opacity: .7; }
-    80%  { transform: translateX(-50%) scale(1.6); opacity: 0; }
-    100% { transform: translateX(-50%) scale(1.6); opacity: 0; }
+    0%   { transform: translateX(-50%) scale(.4); opacity: .8; }
+    80%  { transform: translateX(-50%) scale(1.7); opacity: 0; }
+    100% { transform: translateX(-50%) scale(1.7); opacity: 0; }
   }
   @keyframes alm-shadow {
-    0%, 100% { transform: translateX(-50%) scale(1); opacity: .55; }
-    50%      { transform: translateX(-50%) scale(.85); opacity: .35; }
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: .6; }
+    50%      { transform: translateX(-50%) scale(.8); opacity: .35; }
   }
   @keyframes alm-bob {
     0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-3px); }
+    50%      { transform: translateY(-2px); }
   }
-  @keyframes alm-wave {
-    0%, 100% { transform: rotate(-10deg); }
-    50%      { transform: rotate(28deg); }
-  }
+
   .alm-popup { min-width: 220px; font-family: 'Epilogue Variable', sans-serif; }
   .alm-popup__title { font-family: 'Urbanist Variable', sans-serif; font-weight: 900; color: #064e3b; font-size: 15px; letter-spacing: -0.01em; }
   .alm-popup__sub { color: #c9a84c; font-size: 10px; margin: 2px 0 10px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 700; }
