@@ -5,8 +5,11 @@ import { useEffect, useState } from "react";
 import { getMyProfile, updateMyProfile, upsertMyWisdom } from "@/lib/me.functions";
 import { getHelpTags } from "@/lib/site.functions";
 import { DEPARTMENTS } from "@/lib/departments";
+import { LocationPicker } from "@/components/LocationPicker";
 import { toast } from "sonner";
 import { Loader2, ArrowRight } from "lucide-react";
+
+const STUDENT_ID_RE = /^\d{8}$/;
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({ meta: [{ title: "Complete your profile — Almanac" }] }),
@@ -30,6 +33,8 @@ function Onboarding() {
     company: "",
     grad_year: "",
     city_name: "",
+    city_lat: null as number | null,
+    city_lng: null as number | null,
     message_to_juniors: "",
     linkedin_url: "",
     department: "",
@@ -49,6 +54,8 @@ function Onboarding() {
         company: m.company ?? "",
         grad_year: m.grad_year ? String(m.grad_year) : "",
         city_name: m.city_name ?? "",
+        city_lat: m.city_lat ?? null,
+        city_lng: m.city_lng ?? null,
         message_to_juniors: m.message_to_juniors ?? "",
         linkedin_url: m.linkedin_url ?? "",
         department: m.department ?? "",
@@ -67,18 +74,21 @@ function Onboarding() {
       toast.error("Please select your department");
       return;
     }
-    if (!form.student_id.trim()) {
-      toast.error("Please enter your Student ID");
+    const sid = form.student_id.trim();
+    if (!STUDENT_ID_RE.test(sid)) {
+      toast.error("Student ID must be 8 digits (e.g. 23103113 — first 3 digits are your batch)");
       return;
     }
     setBusy(true);
     try {
-      // Geocode city via Nominatim from the browser (no key required)
-      let lat: number | null = null,
-        lng: number | null = null;
-      if (form.city_name) {
+      // Fall back to geocoding the typed city only when the map pin wasn't used
+      let lat: number | null = form.city_lat;
+      let lng: number | null = form.city_lng;
+      if ((lat == null || lng == null) && form.city_name) {
         try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(form.city_name)}`);
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(form.city_name)}`
+          );
           const arr = await res.json();
           if (arr?.[0]) {
             lat = parseFloat(arr[0].lat);
@@ -101,7 +111,7 @@ function Onboarding() {
           message_to_juniors: form.message_to_juniors || null,
           linkedin_url: form.linkedin_url || null,
           department: form.department || null,
-          student_id: form.student_id.trim() || null,
+          student_id: sid,
           tag_slugs: selectedTags,
         },
       });
@@ -128,7 +138,26 @@ function Onboarding() {
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Field label="Full name" required value={form.full_name} onChange={(v) => setForm((f) => ({ ...f, full_name: v }))} />
-          <Field label="Student ID" required value={form.student_id} onChange={(v) => setForm((f) => ({ ...f, student_id: v }))} placeholder="e.g. 18101234" />
+          <label className="block">
+            <span className="text-sm font-medium">Student ID <span className="text-destructive">*</span></span>
+            <input
+              required
+              inputMode="numeric"
+              pattern="\d{8}"
+              maxLength={8}
+              value={form.student_id}
+              onChange={(e) => setForm((f) => ({ ...f, student_id: e.target.value.replace(/\D/g, "").slice(0, 8) }))}
+              placeholder="23103113"
+              className="mt-1.5 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              8 digits. First 3 are your batch
+              {form.student_id.length >= 3 && (
+                <> — yours is batch <span className="font-semibold text-primary">{form.student_id.slice(0, 3)}</span></>
+              )}
+              .
+            </p>
+          </label>
         </div>
 
         <label className="block">
@@ -154,9 +183,18 @@ function Onboarding() {
           <Field label="Class year" value={form.grad_year} onChange={(v) => setForm((f) => ({ ...f, grad_year: v }))} placeholder="2022" />
           <Field label="Role" value={form.role_title} onChange={(v) => setForm((f) => ({ ...f, role_title: v }))} placeholder="Product Designer" />
           <Field label="Company" value={form.company} onChange={(v) => setForm((f) => ({ ...f, company: v }))} placeholder="Stripe" />
-          <Field label="City" value={form.city_name} onChange={(v) => setForm((f) => ({ ...f, city_name: v }))} placeholder="San Francisco, USA" />
           <Field label="LinkedIn URL" value={form.linkedin_url} onChange={(v) => setForm((f) => ({ ...f, linkedin_url: v }))} placeholder="https://linkedin.com/in/..." />
         </div>
+
+        <div>
+          <label className="text-sm font-medium">Where are you based?</label>
+          <p className="mb-2 text-xs text-muted-foreground">Drop a pin or share your live location — used on the alumni map.</p>
+          <LocationPicker
+            value={{ city_name: form.city_name, city_lat: form.city_lat, city_lng: form.city_lng }}
+            onChange={(v) => setForm((f) => ({ ...f, ...v }))}
+          />
+        </div>
+
         <Field label="Headline" value={form.headline} onChange={(v) => setForm((f) => ({ ...f, headline: v }))} placeholder="Designing payments at Stripe" />
 
         <div>

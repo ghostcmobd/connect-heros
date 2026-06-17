@@ -28,7 +28,12 @@ const profileSchema = z.object({
   message_to_juniors: z.string().trim().max(400).optional().nullable(),
   linkedin_url: z.string().trim().url().max(200).optional().nullable().or(z.literal("")),
   department: z.string().trim().max(200).optional().nullable(),
-  student_id: z.string().trim().max(64).optional().nullable(),
+  student_id: z
+    .string()
+    .trim()
+    .regex(/^\d{8}$/u, "Student ID must be 8 digits")
+    .optional()
+    .nullable(),
   tag_slugs: z.array(z.string().max(60)).max(10).default([]),
 });
 
