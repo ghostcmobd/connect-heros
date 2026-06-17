@@ -118,6 +118,7 @@ export type Database = {
           headline: string | null
           id: string
           is_published: boolean
+          is_verified: boolean
           linkedin_url: string | null
           message_to_juniors: string | null
           role_title: string | null
@@ -137,6 +138,7 @@ export type Database = {
           headline?: string | null
           id: string
           is_published?: boolean
+          is_verified?: boolean
           linkedin_url?: string | null
           message_to_juniors?: string | null
           role_title?: string | null
@@ -156,6 +158,7 @@ export type Database = {
           headline?: string | null
           id?: string
           is_published?: boolean
+          is_verified?: boolean
           linkedin_url?: string | null
           message_to_juniors?: string | null
           role_title?: string | null
