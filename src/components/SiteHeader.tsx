@@ -17,9 +17,10 @@ export function SiteHeader() {
   }, []);
 
   const navItems = [
-    { to: "/", label: "Wisdom" },
+    { to: "/", label: "Home" },
     { to: "/directory", label: "Directory" },
     { to: "/map", label: "Map" },
+    { to: "/wisdom", label: "Wisdom" },
   ] as const;
 
   const onSignOut = async () => {

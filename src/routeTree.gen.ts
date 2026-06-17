@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WisdomRouteImport } from './routes/wisdom'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -19,6 +20,11 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
 
+const WisdomRoute = WisdomRouteImport.update({
+  id: '/wisdom',
+  path: '/wisdom',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MapRoute = MapRouteImport.update({
   id: '/map',
   path: '/map',
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
+  '/wisdom': typeof WisdomRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
+  '/wisdom': typeof WisdomRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
+  '/wisdom': typeof WisdomRoute
   '/_authenticated/messages': typeof AuthenticatedMessagesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/directory'
     | '/map'
+    | '/wisdom'
     | '/messages'
     | '/onboarding'
     | '/profile'
@@ -113,6 +123,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/directory'
     | '/map'
+    | '/wisdom'
     | '/messages'
     | '/onboarding'
     | '/profile'
@@ -124,6 +135,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/directory'
     | '/map'
+    | '/wisdom'
     | '/_authenticated/messages'
     | '/_authenticated/onboarding'
     | '/_authenticated/profile'
@@ -136,11 +148,19 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DirectoryRoute: typeof DirectoryRoute
   MapRoute: typeof MapRoute
+  WisdomRoute: typeof WisdomRoute
   AlumniIdRoute: typeof AlumniIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wisdom': {
+      id: '/wisdom'
+      path: '/wisdom'
+      fullPath: '/wisdom'
+      preLoaderRoute: typeof WisdomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/map': {
       id: '/map'
       path: '/map'
@@ -228,6 +248,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DirectoryRoute: DirectoryRoute,
   MapRoute: MapRoute,
+  WisdomRoute: WisdomRoute,
   AlumniIdRoute: AlumniIdRoute,
 }
 export const routeTree = rootRouteImport
