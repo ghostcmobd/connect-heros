@@ -195,14 +195,14 @@ export function AlumniMap({ cities }: { cities: CityPin[] }) {
       const group = L.layerGroup();
 
       for (const c of cities) {
-        const { drop } = pinSize(c.count);
+        const { w, h } = pinSize(c.count);
         const icon = L.divIcon({
           className: "alm-pin-wrap",
           html: makePinHtml(c.count),
-          iconSize: [drop, drop + 8],
-          iconAnchor: [drop / 2, drop + 6],
-          popupAnchor: [0, -drop],
-          tooltipAnchor: [0, -drop + 4],
+          iconSize: [w, h],
+          iconAnchor: [w / 2, h - 2],
+          popupAnchor: [0, -h + 8],
+          tooltipAnchor: [0, -h + 12],
         });
         const marker = L.marker([c.lat, c.lng], { icon, riseOnHover: true });
         marker.bindTooltip(
