@@ -82,7 +82,7 @@ export function SiteHeader() {
               className="btn-press inline-flex items-center gap-2 rounded-full border-2 border-[color:var(--gold)] bg-transparent px-4 py-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-primary hover:bg-[color:var(--gold)] hover:text-primary"
             >
               <Linkedin className="h-4 w-4" />
-              Sync LinkedIn
+              Sign in with LinkedIn
             </Link>
           )}
         </div>

@@ -16,10 +16,13 @@ import { Route as CompaniesRouteImport } from './routes/companies'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthVerifyRouteImport } from './routes/auth.verify'
 import { Route as AlumniIdRouteImport } from './routes/alumni.$id'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
+import { Route as ApiAuthLinkedinStartRouteImport } from './routes/api/auth/linkedin/start'
+import { Route as ApiAuthLinkedinCallbackRouteImport } from './routes/api/auth/linkedin/callback'
 
 const WisdomRoute = WisdomRouteImport.update({
   id: '/wisdom',
@@ -55,6 +58,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthVerifyRoute = AuthVerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AlumniIdRoute = AlumniIdRouteImport.update({
   id: '/alumni/$id',
   path: '/alumni/$id',
@@ -75,10 +83,20 @@ const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiAuthLinkedinStartRoute = ApiAuthLinkedinStartRouteImport.update({
+  id: '/api/auth/linkedin/start',
+  path: '/api/auth/linkedin/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthLinkedinCallbackRoute = ApiAuthLinkedinCallbackRouteImport.update({
+  id: '/api/auth/linkedin/callback',
+  path: '/api/auth/linkedin/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/companies': typeof CompaniesRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
@@ -87,10 +105,13 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/alumni/$id': typeof AlumniIdRoute
+  '/auth/verify': typeof AuthVerifyRoute
+  '/api/auth/linkedin/callback': typeof ApiAuthLinkedinCallbackRoute
+  '/api/auth/linkedin/start': typeof ApiAuthLinkedinStartRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/companies': typeof CompaniesRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
@@ -99,12 +120,15 @@ export interface FileRoutesByTo {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/alumni/$id': typeof AlumniIdRoute
+  '/auth/verify': typeof AuthVerifyRoute
+  '/api/auth/linkedin/callback': typeof ApiAuthLinkedinCallbackRoute
+  '/api/auth/linkedin/start': typeof ApiAuthLinkedinStartRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/companies': typeof CompaniesRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
@@ -113,6 +137,9 @@ export interface FileRoutesById {
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/alumni/$id': typeof AlumniIdRoute
+  '/auth/verify': typeof AuthVerifyRoute
+  '/api/auth/linkedin/callback': typeof ApiAuthLinkedinCallbackRoute
+  '/api/auth/linkedin/start': typeof ApiAuthLinkedinStartRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,6 +154,9 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/profile'
     | '/alumni/$id'
+    | '/auth/verify'
+    | '/api/auth/linkedin/callback'
+    | '/api/auth/linkedin/start'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,6 +169,9 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/profile'
     | '/alumni/$id'
+    | '/auth/verify'
+    | '/api/auth/linkedin/callback'
+    | '/api/auth/linkedin/start'
   id:
     | '__root__'
     | '/'
@@ -152,17 +185,22 @@ export interface FileRouteTypes {
     | '/_authenticated/onboarding'
     | '/_authenticated/profile'
     | '/alumni/$id'
+    | '/auth/verify'
+    | '/api/auth/linkedin/callback'
+    | '/api/auth/linkedin/start'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   CompaniesRoute: typeof CompaniesRoute
   DirectoryRoute: typeof DirectoryRoute
   MapRoute: typeof MapRoute
   WisdomRoute: typeof WisdomRoute
   AlumniIdRoute: typeof AlumniIdRoute
+  ApiAuthLinkedinCallbackRoute: typeof ApiAuthLinkedinCallbackRoute
+  ApiAuthLinkedinStartRoute: typeof ApiAuthLinkedinStartRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -216,6 +254,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/verify': {
+      id: '/auth/verify'
+      path: '/verify'
+      fullPath: '/auth/verify'
+      preLoaderRoute: typeof AuthVerifyRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/alumni/$id': {
       id: '/alumni/$id'
       path: '/alumni/$id'
@@ -244,6 +289,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMessagesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/auth/linkedin/start': {
+      id: '/api/auth/linkedin/start'
+      path: '/api/auth/linkedin/start'
+      fullPath: '/api/auth/linkedin/start'
+      preLoaderRoute: typeof ApiAuthLinkedinStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/linkedin/callback': {
+      id: '/api/auth/linkedin/callback'
+      path: '/api/auth/linkedin/callback'
+      fullPath: '/api/auth/linkedin/callback'
+      preLoaderRoute: typeof ApiAuthLinkedinCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -262,15 +321,27 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AuthRouteChildren {
+  AuthVerifyRoute: typeof AuthVerifyRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthVerifyRoute: AuthVerifyRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   CompaniesRoute: CompaniesRoute,
   DirectoryRoute: DirectoryRoute,
   MapRoute: MapRoute,
   WisdomRoute: WisdomRoute,
   AlumniIdRoute: AlumniIdRoute,
+  ApiAuthLinkedinCallbackRoute: ApiAuthLinkedinCallbackRoute,
+  ApiAuthLinkedinStartRoute: ApiAuthLinkedinStartRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
