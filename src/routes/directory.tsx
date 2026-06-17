@@ -56,8 +56,9 @@ function Directory() {
         <header className="mb-8 max-w-2xl">
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Alumni directory</h1>
           <p className="mt-3 text-muted-foreground">
-            {all.length} alumni across the world. Filter by what they want to help with — every card includes a real message to current students.
+            A growing circle of alumni around the world. Filter by what they want to help with — every card carries a real message to current students.
           </p>
+
         </header>
       </FadeIn>
 
