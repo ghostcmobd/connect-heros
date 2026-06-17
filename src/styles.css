@@ -65,7 +65,7 @@
   --secondary: oklch(0.50 0.10 162);         /* mid emerald */
   --secondary-foreground: oklch(0.955 0.024 92);
 
-  --muted: oklch(0.93 0.024 92);             /* parchment-tinted */
+  --muted: oklch(0.96 0.012 100);            /* subtle warm neutral */
   --muted-foreground: oklch(0.50 0.10 162);
 
   --accent: oklch(0.78 0.13 88);             /* #c9a84c gold */
