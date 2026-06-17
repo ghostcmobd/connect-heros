@@ -138,7 +138,26 @@ function Onboarding() {
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Field label="Full name" required value={form.full_name} onChange={(v) => setForm((f) => ({ ...f, full_name: v }))} />
-          <Field label="Student ID" required value={form.student_id} onChange={(v) => setForm((f) => ({ ...f, student_id: v }))} placeholder="e.g. 18101234" />
+          <label className="block">
+            <span className="text-sm font-medium">Student ID <span className="text-destructive">*</span></span>
+            <input
+              required
+              inputMode="numeric"
+              pattern="\d{8}"
+              maxLength={8}
+              value={form.student_id}
+              onChange={(e) => setForm((f) => ({ ...f, student_id: e.target.value.replace(/\D/g, "").slice(0, 8) }))}
+              placeholder="23103113"
+              className="mt-1.5 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              8 digits. First 3 are your batch
+              {form.student_id.length >= 3 && (
+                <> — yours is batch <span className="font-semibold text-primary">{form.student_id.slice(0, 3)}</span></>
+              )}
+              .
+            </p>
+          </label>
         </div>
 
         <label className="block">
@@ -164,9 +183,18 @@ function Onboarding() {
           <Field label="Class year" value={form.grad_year} onChange={(v) => setForm((f) => ({ ...f, grad_year: v }))} placeholder="2022" />
           <Field label="Role" value={form.role_title} onChange={(v) => setForm((f) => ({ ...f, role_title: v }))} placeholder="Product Designer" />
           <Field label="Company" value={form.company} onChange={(v) => setForm((f) => ({ ...f, company: v }))} placeholder="Stripe" />
-          <Field label="City" value={form.city_name} onChange={(v) => setForm((f) => ({ ...f, city_name: v }))} placeholder="San Francisco, USA" />
           <Field label="LinkedIn URL" value={form.linkedin_url} onChange={(v) => setForm((f) => ({ ...f, linkedin_url: v }))} placeholder="https://linkedin.com/in/..." />
         </div>
+
+        <div>
+          <label className="text-sm font-medium">Where are you based?</label>
+          <p className="mb-2 text-xs text-muted-foreground">Drop a pin or share your live location — used on the alumni map.</p>
+          <LocationPicker
+            value={{ city_name: form.city_name, city_lat: form.city_lat, city_lng: form.city_lng }}
+            onChange={(v) => setForm((f) => ({ ...f, ...v }))}
+          />
+        </div>
+
         <Field label="Headline" value={form.headline} onChange={(v) => setForm((f) => ({ ...f, headline: v }))} placeholder="Designing payments at Stripe" />
 
         <div>
