@@ -65,6 +65,9 @@ function AlumnusPage() {
                 <span>·</span>
                 <span>Class of {p.grad_year ?? "—"}</span>
               </p>
+              {p.department && (
+                <p className="mt-1.5 text-sm font-medium text-primary">{p.department}</p>
+              )}
             </div>
             {p.linkedin_url && (
               <a

@@ -8,7 +8,7 @@ export const getMyProfile = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("profiles")
       .select(
-        "id, full_name, headline, role_title, company, grad_year, city_name, city_lat, city_lng, message_to_juniors, avatar_url, linkedin_url, profile_help_tags(tag_id, help_tags(slug,label))"
+        "id, full_name, headline, role_title, company, grad_year, city_name, city_lat, city_lng, message_to_juniors, avatar_url, linkedin_url, department, student_id, profile_help_tags(tag_id, help_tags(slug,label))"
       )
       .eq("id", context.userId)
       .maybeSingle();
@@ -27,6 +27,8 @@ const profileSchema = z.object({
   city_lng: z.number().min(-180).max(180).optional().nullable(),
   message_to_juniors: z.string().trim().max(400).optional().nullable(),
   linkedin_url: z.string().trim().url().max(200).optional().nullable().or(z.literal("")),
+  department: z.string().trim().max(200).optional().nullable(),
+  student_id: z.string().trim().max(64).optional().nullable(),
   tag_slugs: z.array(z.string().max(60)).max(10).default([]),
 });
 
