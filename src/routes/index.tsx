@@ -37,7 +37,7 @@ function Home() {
   const { data: wisdom } = useSuspenseQuery(wisdomQuery);
 
   const totalAlumni = cities.reduce((s, c) => s + c.count, 0);
-  const wisdomTeaser = useMemo(() => wisdom.slice(0, 6), [wisdom]);
+  
 
   return (
     <div>
