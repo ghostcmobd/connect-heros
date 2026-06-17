@@ -2,6 +2,8 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Linkedin, LogOut, ShieldCheck } from "lucide-react";
+import logoAsset from "@/assets/logo.png.asset.json";
+
 
 export function SiteHeader() {
   const navigate = useNavigate();
@@ -48,12 +50,14 @@ export function SiteHeader() {
     <header className="sticky top-0 z-30 border-b border-[color:var(--gold)]/20 bg-[color:var(--parchment)]/85 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5">
         <Link to="/" className="flex items-center gap-2.5">
-          <span className="relative grid h-9 w-9 place-items-center rounded-lg bg-primary font-display text-base font-black text-primary-foreground">
-            A
-            <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-[color:var(--gold)]" />
-          </span>
+          <img
+            src={logoAsset.url}
+            alt="Almanac logo"
+            className="h-10 w-10 rounded-lg object-cover ring-1 ring-[color:var(--gold)]/30"
+          />
           <span className="font-display text-lg font-black tracking-tight">Almanac</span>
         </Link>
+
 
         <nav className="hidden items-center gap-1 md:flex">
           {navItems.map((n) => {
