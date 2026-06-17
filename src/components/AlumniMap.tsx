@@ -167,19 +167,33 @@ function makePinHtml(count: number) {
   `;
 }
 
+function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
+  const toRad = (x: number) => (x * Math.PI) / 180;
+  const R = 6371;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+}
+
 export function AlumniMap({ cities }: { cities: CityPin[] }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);
   const layerRef = useRef<any>(null);
+  const meMarkerRef = useRef<any>(null);
+  const LRef = useRef<any>(null);
+  const [locating, setLocating] = useState(false);
+  const [nearbyMsg, setNearbyMsg] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     injectStyles();
     loadLeaflet().then((L) => {
       if (cancelled || !containerRef.current) return;
+      LRef.current = L;
       if (!mapRef.current) {
         mapRef.current = L.map(containerRef.current, {
-          center: [25, 10], zoom: 2, minZoom: 2, maxZoom: 8,
+          center: [25, 10], zoom: 2, minZoom: 2, maxZoom: 12,
           worldCopyJump: true, scrollWheelZoom: true, zoomControl: true,
           zoomAnimation: true, fadeAnimation: true, markerZoomAnimation: true,
         });
@@ -244,7 +258,96 @@ export function AlumniMap({ cities }: { cities: CityPin[] }) {
     if (mapRef.current) { mapRef.current.remove(); mapRef.current = null; }
   }, []);
 
-  return <div ref={containerRef} className="almanac-map" style={{ height: "100%", width: "100%" }} />;
+  const findNearMe = () => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setNearbyMsg("Geolocation is not supported on this device.");
+      return;
+    }
+    setLocating(true);
+    setNearbyMsg(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLocating(false);
+        const L = LRef.current;
+        const map = mapRef.current;
+        if (!L || !map) return;
+        const me = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+
+        const working = cities.flatMap((c) =>
+          c.alumni
+            .filter((a) => !!a.company)
+            .map((a) => ({ ...a, city: c.city_name, lat: c.lat, lng: c.lng, km: haversineKm(me, c) }))
+        ).sort((a, b) => a.km - b.km).slice(0, 5);
+
+        const meIcon = L.divIcon({
+          className: "alm-me-wrap",
+          html: `<div style="position:relative;width:22px;height:22px">
+              <div style="position:absolute;inset:0;border-radius:999px;background:rgba(13,122,95,.3);animation:alm-pulse 2s ease-out infinite"></div>
+              <div style="position:absolute;inset:5px;border-radius:999px;background:#0d7a5f;border:2px solid #f5f0e0;box-shadow:0 4px 12px rgba(6,78,59,.45)"></div>
+            </div>`,
+          iconSize: [22, 22],
+          iconAnchor: [11, 11],
+          popupAnchor: [0, -10],
+        });
+        if (meMarkerRef.current) map.removeLayer(meMarkerRef.current);
+        meMarkerRef.current = L.marker([me.lat, me.lng], { icon: meIcon, zIndexOffset: 1000 });
+
+        const list = working.length
+          ? working.map((a) =>
+              `<li class="alm-popup__item">
+                 <div class="alm-popup__avatar">${escapeHtml(initials(a.full_name))}</div>
+                 <div style="min-width:0;flex:1">
+                   <a class="alm-popup__name" href="/alumni/${a.id}">${escapeHtml(a.full_name)}</a>
+                   <div class="alm-popup__role">${escapeHtml(a.role_title ?? "")}${a.company ? ` · ${escapeHtml(a.company)}` : ""}</div>
+                   <div class="alm-popup__role" style="color:#c9a84c;font-weight:700">${escapeHtml(a.city)} · ${Math.round(a.km)} km</div>
+                 </div>
+               </li>`
+            ).join("")
+          : `<li class="alm-popup__item"><div class="alm-popup__role">No working alumni found yet.</div></li>`;
+
+        meMarkerRef.current.bindPopup(
+          `<div class="alm-popup">
+            <div class="alm-popup__title">You are here</div>
+            <div class="alm-popup__sub"><span class="alm-popup__dot"></span> Nearest working alumni</div>
+            <ul class="alm-popup__list">${list}</ul>
+          </div>`,
+          { closeButton: false, autoPanPadding: [24, 24] }
+        ).addTo(map);
+
+        map.flyTo([me.lat, me.lng], working[0] ? 5 : 7, { duration: 1.2 });
+        setTimeout(() => meMarkerRef.current?.openPopup(), 1300);
+        setNearbyMsg(working[0] ? `Nearest: ${working[0].full_name} · ${Math.round(working[0].km)} km` : "No working alumni nearby yet.");
+      },
+      (err) => {
+        setLocating(false);
+        setNearbyMsg(err.code === err.PERMISSION_DENIED ? "Location permission denied." : "Couldn't get your location.");
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
+
+  return (
+    <div className="relative h-full w-full">
+      <div ref={containerRef} className="almanac-map" style={{ height: "100%", width: "100%" }} />
+      <button
+        type="button"
+        onClick={findNearMe}
+        disabled={locating}
+        className="absolute bottom-3 left-3 z-[450] inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/50 bg-primary/90 px-3 py-1.5 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-[color:var(--parchment)] shadow-lg backdrop-blur-md transition hover:bg-primary disabled:opacity-60"
+      >
+        <span className="relative flex h-1.5 w-1.5">
+          <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-75" />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
+        </span>
+        {locating ? "Locating…" : "Find alumni near me"}
+      </button>
+      {nearbyMsg && (
+        <div className="pointer-events-none absolute bottom-12 left-3 z-[450] max-w-[80%] rounded-md border border-[color:var(--gold)]/40 bg-primary/85 px-2.5 py-1 font-display text-[10px] font-semibold text-[color:var(--parchment)] backdrop-blur-md">
+          {nearbyMsg}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function escapeHtml(s: string) {
