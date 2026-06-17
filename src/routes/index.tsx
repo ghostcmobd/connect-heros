@@ -146,13 +146,9 @@ function Home() {
             </Link>
           </div>
         </FadeIn>
-        <div className="masonry-3">
-          {wisdomTeaser.map((item, i) => (
-            <FadeIn key={item.id} delay={Math.min(i * 0.03, 0.2)}>
-              <WisdomCard item={item} />
-            </FadeIn>
-          ))}
-        </div>
+        <FadeIn>
+          <WisdomLetterbox items={wisdom} />
+        </FadeIn>
       </section>
     </div>
   );
