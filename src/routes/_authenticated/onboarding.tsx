@@ -74,18 +74,21 @@ function Onboarding() {
       toast.error("Please select your department");
       return;
     }
-    if (!form.student_id.trim()) {
-      toast.error("Please enter your Student ID");
+    const sid = form.student_id.trim();
+    if (!STUDENT_ID_RE.test(sid)) {
+      toast.error("Student ID must be 8 digits (e.g. 23103113 — first 3 digits are your batch)");
       return;
     }
     setBusy(true);
     try {
-      // Geocode city via Nominatim from the browser (no key required)
-      let lat: number | null = null,
-        lng: number | null = null;
-      if (form.city_name) {
+      // Fall back to geocoding the typed city only when the map pin wasn't used
+      let lat: number | null = form.city_lat;
+      let lng: number | null = form.city_lng;
+      if ((lat == null || lng == null) && form.city_name) {
         try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(form.city_name)}`);
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(form.city_name)}`
+          );
           const arr = await res.json();
           if (arr?.[0]) {
             lat = parseFloat(arr[0].lat);
@@ -108,7 +111,7 @@ function Onboarding() {
           message_to_juniors: form.message_to_juniors || null,
           linkedin_url: form.linkedin_url || null,
           department: form.department || null,
-          student_id: form.student_id.trim() || null,
+          student_id: sid,
           tag_slugs: selectedTags,
         },
       });
