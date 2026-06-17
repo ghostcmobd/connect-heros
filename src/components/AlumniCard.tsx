@@ -24,6 +24,9 @@ export function AlumniCard({ item }: { item: DirectoryItem }) {
             <MapPin className="h-3 w-3" />
             {item.city_name ?? "Remote"} · Class of {item.grad_year ?? "—"}
           </p>
+          {item.department && (
+            <p className="mt-1 text-xs font-medium text-primary/90">{item.department}</p>
+          )}
         </div>
       </div>
 
