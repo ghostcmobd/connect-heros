@@ -92,7 +92,6 @@ function CompaniesPage() {
                   alum{c.count === 1 ? "" : "ni"}
                 </div>
               </div>
-              {i}
             </li>
           );
         })}
