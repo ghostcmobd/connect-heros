@@ -3,9 +3,9 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { getDirectory, getMapPins, getWisdomFeed } from "@/lib/site.functions";
 import { ShufflingAlumni } from "@/components/ShufflingAlumni";
+import { TopCompanies } from "@/components/TopCompanies";
 import { WisdomLetterbox } from "@/components/WisdomLetterbox";
-import { FadeIn } from "@/components/FadeIn";
-import { ArrowRight, Heart, Linkedin, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 
 const AlumniMap = lazy(() => import("@/components/AlumniMap").then((m) => ({ default: m.AlumniMap })));
 
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Almanac — Where alumni lead" },
-      { name: "description", content: "Find alumni around the world, see what they're working on, and reach out for resume reviews, mock interviews, and coffee chats." },
+      { name: "description", content: "Find alumni around the world, see who's hiring, and read wisdom from those who walked the path." },
       { property: "og:title", content: "Almanac — Where alumni lead" },
       { property: "og:description", content: "An alumni registry connecting current students with the people who've already walked their path." },
     ],
@@ -31,135 +31,67 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+function SectionHeader({ eyebrow, title, href }: { eyebrow: string; title: string; href?: string }) {
+  return (
+    <div className="mb-3 flex items-end justify-between gap-3">
+      <div className="min-w-0">
+        <span className="eyebrow">{eyebrow}</span>
+        <h2 className="mt-1 font-display text-xl font-black tracking-tight sm:text-2xl">{title}</h2>
+      </div>
+      {href && (
+        <Link
+          to={href as any}
+          className="shrink-0 inline-flex items-center gap-1 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-primary-soft hover:text-[color:var(--gold-deep)]"
+        >
+          See all <ArrowRight className="h-3 w-3" />
+        </Link>
+      )}
+    </div>
+  );
+}
+
 function Home() {
   const { data: cities } = useSuspenseQuery(mapQuery);
   const { data: alumni } = useSuspenseQuery(directoryQuery);
   const { data: wisdom } = useSuspenseQuery(wisdomQuery);
 
-  const totalAlumni = cities.reduce((s, c) => s + c.count, 0);
-  const activeCount = Math.min(alumni.length, 14);
-
   return (
-    <div className="px-5 pt-8 pb-4 sm:px-8 sm:pt-12">
-      <div className="mx-auto flex max-w-7xl flex-col gap-24">
+    <div className="mx-auto w-full max-w-2xl px-4 pt-4 pb-10 flex flex-col gap-7">
 
-        {/* Hero — split rounded card */}
-        <FadeIn>
-          <section className="archive-card flex h-auto flex-col overflow-hidden p-0 shadow-[0_40px_80px_-40px_oklch(0.32_0.06_162/0.45)] lg:h-[680px] lg:flex-row">
-            {/* Map */}
-            <div className="relative flex h-[420px] w-full items-center justify-center overflow-hidden bg-primary lg:h-full lg:w-1/2">
-              <Suspense fallback={<div className="grid h-full w-full place-items-center"><Loader2 className="h-5 w-5 animate-spin text-[color:var(--parchment)]/70" /></div>}>
-                <AlumniMap cities={cities} />
-              </Suspense>
-              {/* Decorative top-right chip */}
-              <div className="pointer-events-none absolute right-5 top-5 z-[400] inline-flex items-center gap-2 rounded-full border border-[color:var(--gold)]/40 bg-primary/70 px-3 py-1.5 font-display text-[10px] font-bold uppercase tracking-[0.22em] text-[color:var(--parchment)] backdrop-blur-md">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[color:var(--gold)]" />
-                </span>
-                Live Global Network
-              </div>
-              {/* Bottom-left small caps */}
-              <div className="pointer-events-none absolute bottom-5 left-5 z-[400] font-display text-[10px] font-bold uppercase tracking-[0.4em] text-[color:var(--parchment)]/55">
-                Global Wisdom Network
-              </div>
-            </div>
+      {/* 1. Map */}
+      <section>
+        <SectionHeader eyebrow="Global map" title="Alumni near you" href="/directory" />
+        <div className="archive-card relative h-[260px] overflow-hidden p-0 sm:h-[320px]">
+          <Suspense fallback={<div className="grid h-full w-full place-items-center bg-primary"><Loader2 className="h-5 w-5 animate-spin text-[color:var(--parchment)]/70" /></div>}>
+            <AlumniMap cities={cities} />
+          </Suspense>
+          <div className="pointer-events-none absolute right-3 top-3 z-[400] inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/40 bg-primary/80 px-2.5 py-1 font-display text-[9px] font-bold uppercase tracking-[0.18em] text-[color:var(--parchment)] backdrop-blur-md">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[color:var(--gold)]" />
+            </span>
+            Live
+          </div>
+        </div>
+      </section>
 
-            {/* Content */}
-            <div className="relative flex w-full flex-col justify-center bg-card p-8 sm:p-12 lg:w-1/2 lg:p-16 xl:p-20">
-              <span className="eyebrow">Est. Alumni Registry</span>
+      {/* 2. Shuffling alumni */}
+      <section>
+        <SectionHeader eyebrow="Open to chat" title="Meet alumni" href="/directory" />
+        <ShufflingAlumni alumni={alumni} count={4} intervalMs={4000} />
+      </section>
 
-              <h1 className="mt-5 font-display text-5xl font-black leading-[0.88] tracking-tighter sm:text-6xl xl:text-7xl">
-                Where<br />
-                <span className="text-[color:var(--gold-deep)]">Alumni</span><br />
-                Lead.
-              </h1>
+      {/* 3. Top companies */}
+      <section>
+        <SectionHeader eyebrow="Where they work" title="Top companies" />
+        <TopCompanies alumni={alumni} limit={6} />
+      </section>
 
-              <div className="mt-8 flex items-center gap-5">
-                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-[color:var(--gold)] bg-[color:var(--parchment)] font-display text-[11px] font-black tracking-tight text-primary">
-                  +{totalAlumni}
-                </div>
-                <p className="text-sm leading-snug text-primary-soft">
-                  <span className="block font-display text-base font-black text-primary">
-                    {totalAlumni.toLocaleString()} alumni
-                  </span>
-                  across {cities.length} cities ready to mentor.
-                </p>
-              </div>
-
-              <div className="mt-10 flex flex-wrap gap-3">
-                <Link
-                  to="/directory"
-                  className="btn-press inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 font-display text-sm font-black uppercase tracking-[0.16em] text-primary-foreground shadow-[0_18px_30px_-14px_oklch(0.32_0.06_162/0.55)] hover:bg-[color:var(--primary-soft)]"
-                >
-                  Browse directory <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  to="/match"
-                  className="btn-press inline-flex items-center gap-2 rounded-full border-2 border-primary/15 px-7 py-4 font-display text-sm font-black uppercase tracking-[0.16em] text-primary transition-colors hover:border-[color:var(--gold)]"
-                >
-                  <Heart className="h-4 w-4 text-[color:var(--gold-deep)]" /> Swipe to match
-                </Link>
-              </div>
-
-              <Link
-                to="/auth"
-                className="group mt-8 inline-flex items-center gap-2 font-display text-xs font-bold uppercase tracking-[0.2em] text-[color:var(--primary-soft)] hover:text-[color:var(--gold-deep)]"
-              >
-                <Linkedin className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                Sync with LinkedIn
-              </Link>
-            </div>
-          </section>
-        </FadeIn>
-
-        {/* Section: Alumni open to chat */}
-        <section>
-          <FadeIn>
-            <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <span className="eyebrow">Nº 01</span>
-                <h2 className="mt-3 font-display text-4xl font-black tracking-tight sm:text-5xl">Live Mentorship</h2>
-                <p className="mt-2 max-w-xl text-primary-soft">
-                  Alumni currently online and open for a fifteen-minute conversation. A new set every five seconds.
-                </p>
-              </div>
-              <div className="flex items-center gap-5">
-                <div className="inline-flex items-center gap-2 font-display text-[10px] font-bold uppercase tracking-[0.22em] text-primary">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inset-0 animate-ping rounded-full bg-[color:var(--gold)] opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[color:var(--gold-deep)]" />
-                  </span>
-                  {activeCount} Active now
-                </div>
-                <Link
-                  to="/directory"
-                  className="btn-press inline-flex items-center gap-1.5 rounded-full border border-[color:var(--gold)]/40 bg-card px-4 py-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] hover:border-[color:var(--gold)]"
-                >
-                  Full registry <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-            </div>
-          </FadeIn>
-          <ShufflingAlumni alumni={alumni} count={3} intervalMs={5000} />
-        </section>
-
-        {/* Section: Words of wisdom */}
-        <section className="pb-8">
-          <FadeIn>
-            <div className="mb-12 text-center">
-              <span className="eyebrow justify-center">Nº 02 · Archived Wisdom</span>
-              <h2 className="mt-3 font-display text-4xl font-black tracking-tight sm:text-5xl">Words of Wisdom</h2>
-              <p className="mx-auto mt-3 max-w-xl text-primary-soft">
-                Sealed letters from alumni — the things they wish someone had told them.
-              </p>
-            </div>
-          </FadeIn>
-          <FadeIn>
-            <WisdomLetterbox items={wisdom} />
-          </FadeIn>
-        </section>
-      </div>
+      {/* 4. Wisdom board */}
+      <section>
+        <SectionHeader eyebrow="Wisdom board" title="Words of wisdom" href="/wisdom" />
+        <WisdomLetterbox items={wisdom} />
+      </section>
     </div>
   );
 }
