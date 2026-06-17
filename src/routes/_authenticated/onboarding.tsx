@@ -12,7 +12,7 @@ import { Loader2, ArrowRight } from "lucide-react";
 const STUDENT_ID_RE = /^\d{8}$/;
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
-  head: () => ({ meta: [{ title: "Complete your profile — Almanac" }] }),
+  head: () => ({ meta: [{ title: "Complete your profile — THE KNOT" }] }),
   component: Onboarding,
 });
 

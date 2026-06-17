@@ -11,7 +11,7 @@ export function SiteFooter() {
               <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-[color:var(--gold)]" />
             </span>
             <div className="leading-tight">
-              <div className="font-display text-base font-black tracking-tight">Almanac</div>
+              <div className="font-display text-base font-black tracking-tight">THE KNOT</div>
               <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-[color:var(--gold-deep)]">
                 Est. Alumni Registry
               </div>
@@ -26,7 +26,7 @@ export function SiteFooter() {
           </nav>
         </div>
         <div className="mt-8 flex flex-col gap-2 border-t border-[color:var(--gold)]/15 pt-5 text-[10px] font-semibold uppercase tracking-[0.22em] text-primary-soft/80 sm:flex-row sm:items-center sm:justify-between">
-          <span>© {new Date().getFullYear()} Almanac — Alumni × Students</span>
+          <span>© {new Date().getFullYear()} THE KNOT — Alumni × Students</span>
           <span>Bound by curiosity, carried by network.</span>
         </div>
       </div>

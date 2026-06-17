@@ -16,9 +16,9 @@ const tagsQuery = queryOptions({ queryKey: ["help_tags"], queryFn: () => getHelp
 export const Route = createFileRoute("/directory")({
   head: () => ({
     meta: [
-      { title: "Alumni Directory — Almanac" },
+      { title: "Alumni Directory — THE KNOT" },
       { name: "description", content: "Search alumni by name, department, company, city, and how they want to help current students." },
-      { property: "og:title", content: "Alumni Directory — Almanac" },
+      { property: "og:title", content: "Alumni Directory — THE KNOT" },
       { property: "og:description", content: "Find alumni from your department who are open to help." },
     ],
   }),

@@ -20,8 +20,8 @@ export const Route = createFileRoute("/alumni/$id")({
   head: ({ loaderData }) => {
     const p: any = loaderData;
     const name = p?.full_name ?? "Alumnus";
-    const title = `${name} — Almanac`;
-    const desc = p?.message_to_juniors ?? `${name} on Almanac`;
+    const title = `${name} — THE KNOT`;
+    const desc = p?.message_to_juniors ?? `${name} on THE KNOT`;
     return {
       meta: [
         { title },

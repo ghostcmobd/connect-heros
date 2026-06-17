@@ -10,7 +10,7 @@ export const Route = createFileRoute("/companies")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Top companies — Almanac" },
+      { title: "Top companies — THE KNOT" },
       { name: "description", content: "Companies ranked by the number of alumni employed there." },
     ],
   }),

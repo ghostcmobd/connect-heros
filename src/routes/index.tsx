@@ -17,9 +17,9 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Almanac — Where alumni lead" },
+      { title: "THE KNOT — Where alumni lead" },
       { name: "description", content: "Find alumni around the world, see who's hiring, and read wisdom from those who walked the path." },
-      { property: "og:title", content: "Almanac — Where alumni lead" },
+      { property: "og:title", content: "THE KNOT — Where alumni lead" },
       { property: "og:description", content: "An alumni registry connecting current students with the people who've already walked their path." },
     ],
   }),

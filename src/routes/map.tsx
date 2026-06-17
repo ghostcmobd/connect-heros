@@ -13,9 +13,9 @@ export const Route = createFileRoute("/map")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Alumni World Map — Almanac" },
+      { title: "Alumni World Map — THE KNOT" },
       { name: "description", content: "An interactive world map of alumni — click a city to see who's there." },
-      { property: "og:title", content: "Alumni World Map — Almanac" },
+      { property: "og:title", content: "Alumni World Map — THE KNOT" },
       { property: "og:description", content: "Click a city to see alumni working there." },
     ],
   }),

@@ -5,7 +5,7 @@ import { listMyMessages } from "@/lib/me.functions";
 import { Loader2, Inbox } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/messages")({
-  head: () => ({ meta: [{ title: "Messages — Almanac" }] }),
+  head: () => ({ meta: [{ title: "Messages — THE KNOT" }] }),
   component: MessagesPage,
 });
 

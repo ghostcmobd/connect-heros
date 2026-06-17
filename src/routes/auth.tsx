@@ -7,9 +7,9 @@ import { FadeIn } from "@/components/FadeIn";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Join Almanac — Sign in with LinkedIn" },
+      { title: "Join THE KNOT — Sign in with LinkedIn" },
       { name: "description", content: "1-click signup for alumni. Sign in with LinkedIn to help current students." },
-      { property: "og:title", content: "Join Almanac" },
+      { property: "og:title", content: "Join THE KNOT" },
       { property: "og:description", content: "1-click signup for alumni. Help current students." },
     ],
   }),
@@ -46,7 +46,7 @@ function AuthPage() {
             {[
               "Your profile lives on the public directory",
               "Pick how you want to help: resume reviews, coffee chats, referrals",
-              "Students reach out through Almanac — your inbox stays clean",
+              "Students reach out through THE KNOT — your inbox stays clean",
             ].map((t) => (
               <li key={t} className="flex items-start gap-2.5">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
@@ -59,7 +59,7 @@ function AuthPage() {
 
       <FadeIn delay={0.08}>
         <div className="soft-card p-8">
-          <h2 className="font-display text-xl font-bold tracking-tight">Sign in to Almanac</h2>
+          <h2 className="font-display text-xl font-bold tracking-tight">Sign in to THE KNOT</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             One way in. One click. We use LinkedIn to verify you're a real alum.
           </p>
