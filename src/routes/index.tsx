@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { lazy, Suspense, useMemo } from "react";
+import { lazy, Suspense } from "react";
 import { getDirectory, getMapPins, getWisdomFeed } from "@/lib/site.functions";
 import { ShufflingAlumni } from "@/components/ShufflingAlumni";
 import { WisdomLetterbox } from "@/components/WisdomLetterbox";
