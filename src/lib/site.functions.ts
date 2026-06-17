@@ -35,6 +35,7 @@ export type DirectoryItem = {
   message_to_juniors: string | null;
   avatar_url: string | null;
   linkedin_url: string | null;
+  is_verified: boolean;
   tags: { slug: string; label: string }[];
 };
 
