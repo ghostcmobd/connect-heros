@@ -73,9 +73,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Almanac — Where alumni and students meet" },
+      { title: "THE KNOT — Where alumni and students meet" },
       { name: "description", content: "Real advice, real introductions, and a global map of alumni ready to help current students." },
-      { property: "og:title", content: "Almanac — Where alumni and students meet" },
+      { property: "og:title", content: "THE KNOT — Where alumni and students meet" },
       { property: "og:description", content: "Real advice, real introductions, and a global map of alumni ready to help current students." },
       { property: "og:type", content: "website" },
       { property: "og:image", content: logoAsset.url },

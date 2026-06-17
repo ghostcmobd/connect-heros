@@ -15,9 +15,9 @@ const wisdomQuery = queryOptions({
 export const Route = createFileRoute("/wisdom")({
   head: () => ({
     meta: [
-      { title: "Words of Wisdom — Almanac" },
+      { title: "Words of Wisdom — THE KNOT" },
       { name: "description", content: "Short, honest notes from alumni about career, academics, internships, and life." },
-      { property: "og:title", content: "Words of Wisdom — Almanac" },
+      { property: "og:title", content: "Words of Wisdom — THE KNOT" },
       { property: "og:description", content: "Short, honest notes from alumni for current students." },
     ],
   }),

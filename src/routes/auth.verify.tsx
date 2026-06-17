@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/auth/verify")({
-  head: () => ({ meta: [{ title: "Signing you in — Almanac" }] }),
+  head: () => ({ meta: [{ title: "Signing you in — THE KNOT" }] }),
   component: VerifyPage,
 });
 

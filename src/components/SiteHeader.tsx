@@ -52,10 +52,10 @@ export function SiteHeader() {
         <Link to="/" className="flex items-center gap-2.5">
           <img
             src={logoAsset.url}
-            alt="Almanac logo"
+            alt="THE KNOT logo"
             className="h-10 w-10 rounded-lg object-cover ring-1 ring-[color:var(--gold)]/30"
           />
-          <span className="font-display text-lg font-black tracking-tight">Almanac</span>
+          <span className="font-display text-lg font-black tracking-tight">THE KNOT</span>
         </Link>
 
 
