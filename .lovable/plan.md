@@ -1,96 +1,54 @@
-## Alumni Networking Web App — Build Plan
+# Almanac redesign — The Archivist Modern
 
-A production-ready alumni networking platform with a light, airy sage-accented aesthetic, real backend, real auth, and real LinkedIn-style onboarding.
+Rebuild the home page in the locked Emerald Prestige direction (deep emerald, gold, parchment, Urbanist + Epilogue) and propagate the tokens so the rest of the app stops looking generic.
 
-### Visual System
+## 1. Design system (site-wide)
 
-- Palette: off-white `#fafaf7` background, surface `#eef2ec`, sage `#b7cdb5`, deep sage `#4b6b52` for text/CTAs. Neutral ink `#1f2421`.
-- Type: Plus Jakarta Sans (display + body) loaded via `<link>` in `__root.tsx`, declared in `@theme`.
-- Motion: Framer Motion for fade-in-on-scroll, hover lift (translateY -2px + soft shadow), button tap scale 0.97. Respects `prefers-reduced-motion`.
-- No emojis. Lucide icons only. Realistic copy throughout — named alumni, real companies (Stripe, Figma, Linear, Anthropic, McKinsey, Genentech, etc.), real grad years 2014–2024.
+Update `src/styles.css`:
+- Install Urbanist + Epilogue via `@fontsource-variable/urbanist` and `@fontsource-variable/epilogue` (bun add), import in `src/start.tsx` / `__root.tsx`.
+- Replace the current color tokens under `:root` and `@theme inline`:
+  - `--background` parchment `oklch(0.96 0.022 90)` (≈ #f5f0e0)
+  - `--foreground` deep emerald `oklch(0.32 0.06 160)` (≈ #064e3b)
+  - `--primary` emerald `oklch(0.32 0.06 160)` / `--primary-foreground` parchment
+  - `--secondary` mid emerald `oklch(0.50 0.10 160)` (≈ #0d7a5f)
+  - `--accent` gold `oklch(0.78 0.13 85)` (≈ #c9a84c)
+  - `--surface` white, `--muted` parchment-tinted, `--border` gold/10
+  - `--shadow-elegant` soft emerald-tinted shadow
+- Map `--font-display: "Urbanist Variable"`, `--font-sans: "Epilogue Variable"` under `@theme`.
+- Add utilities: `.eyebrow` (small-caps gold), `.gold-rule` (1px gold hairline), `.archive-card` (white card + gold/10 border + hover gold border + shadow).
 
-### Pages / Routes
+## 2. Home page (`src/routes/index.tsx`)
 
-```
-/              Words of Wisdom Wall (masonry, public)
-/map           Interactive Alumni Map (Leaflet, public)
-/directory     Searchable Alumni Directory (public)
-/alumni/$id    Public profile page
-/auth          Sign in / sign up (email + "Sync with LinkedIn")
-/_authenticated/
-  onboarding   Complete profile after LinkedIn/email signup
-  profile      Edit my profile, advice, help-tags, location
-  messages     Inbox for student->alumni outreach (basic)
-```
+Three stacked sections inside a `max-w-7xl` container with generous gap (mirrors the prototype):
 
-Shared header with sage-on-white nav and a prominent "Sync with LinkedIn" CTA when signed out.
+### Hero — split rounded card
+- White rounded `2rem` card with gold/10 border, big shadow, `h-[700px]`.
+- Left half: real Leaflet map (`AlumniMap`) on emerald background; keep the existing cartoon waving pins (already gold/emerald). Add a bottom-left "Global Wisdom Network" small-caps label and a top-right live-counter chip.
+- Right half (white): gold hairline + "Est. Alumni Registry" eyebrow → Urbanist 6xl/8xl headline "Where / **Alumni** (gold) / Lead." → alumni count chip (`+{totalAlumni}` avatar + "12,480 alumni across N cities") → CTAs: filled emerald "Browse directory", outlined "Swipe to match", and a tertiary `Sync with LinkedIn` link with the LinkedIn glyph.
 
-### Feature Details
+### Section: Alumni open to chat
+- Header row: Urbanist 4xl "Live Mentorship" + "Alumni currently online…" sub + right-aligned live pulse "{n} Active now".
+- 3-column grid powered by existing `ShufflingAlumni` (kept as 3, 5s interval). Rebuild `AlumniCard` to the prototype shape: gold-ringed avatar (grayscale → color on hover), Urbanist name, gold uppercase role @ company, short message, parchment-fill "Send message" button that inverts to emerald on hover.
 
-**1. Words of Wisdom Wall (`/`)**
-- CSS masonry (column-count responsive: 1/2/3/4).
-- Card: quote, name, "Class of YYYY", current role @ company, small sage avatar ring.
-- Loaded from `wisdom` table joined to `profiles`; cards fade-in on scroll (IntersectionObserver + framer).
-- Filter chips: All / Career / Academics / Life / Internships.
+### Section: Words of wisdom — envelope
+- Wrap `WisdomLetterbox` in the prototype's emerald frame: outer emerald rounded card with 1px gold padding, inner mid-emerald letter panel; gold wax seal sits at top-center with "A" monogram; "Correspondence No. {n}" eyebrow above the quote; quote in italic Epilogue 2xl/3xl on parchment text; gold uppercase signature + role beneath a gold/10 hairline. Keep the existing tap-to-shuffle logic; the seal is the tap target. Pulsing "Click the seal to reveal another letter" caption below.
 
-**2. Interactive Alumni Map (`/map`)**
-- Leaflet + OpenStreetMap tiles, custom sage pin SVG, `leaflet.markercluster` for city clusters.
-- Hover/click cluster -> sleek tooltip card listing up to 5 alumni in that city with role and a "View" link to their profile.
-- Data: `profiles.city_lat`, `profiles.city_lng`, `profiles.city_name`.
+## 3. Shared chrome
 
-**3. Alumni Directory (`/directory`)**
-- Search by name/company/role; filter by grad year range, help-tag, city.
-- Profile cards with soft border, hover lift, prominent "Message to Juniors" pull-quote, pill tags (Resume Review, Mock Interviews, Coffee Chat, Referrals, Portfolio Critique, Grad School Advice, Startup Advice, Negotiation Help).
-- "Reach out" button -> opens message composer (authenticated only).
+- `SiteHeader`: parchment background, Urbanist wordmark with a small gold dot, nav in Epilogue uppercase small-caps with gold underline on active; CTA becomes gold-outlined "Sync LinkedIn".
+- `SiteFooter`: gold hairline top border, Urbanist mark, Epilogue link grid.
 
-**4. Frictionless Onboarding (`/auth`)**
-- Big "Sync with LinkedIn — 1-click signup" button using Supabase Auth LinkedIn OIDC provider. Below it: email/password fallback.
-- After signup, redirect to `/onboarding`: prefill name/headline/company from LinkedIn claims, ask user to pick help-tags, set city (geocoded via OpenStreetMap Nominatim), add a "Message to Juniors" quote, add a Words of Wisdom snippet.
-- LinkedIn requires the user to enable the LinkedIn provider in Cloud auth settings with their LinkedIn OAuth client id/secret — I'll surface a clear in-app notice and docs link if the provider isn't configured, with email/password working immediately.
+## 4. Map polish (`AlumniMap.tsx`)
 
-### Backend (Lovable Cloud)
+Already has cartoon pins — adjust palette only: shirt gradient → `#c9a84c → #b08a2e` for gold pins (hub cities), `#0d7a5f → #064e3b` for emerald pins (smaller cities); badge background gold for emerald pins, emerald for gold pins. Map basemap stays Carto Voyager; add an emerald tinted overlay (`mix-blend-multiply`) so it harmonises with the hero panel.
 
-Tables (all with grants + RLS):
+## 5. Cleanup
 
-- `profiles` (id uuid PK = auth.users.id, full_name, headline, company, role_title, grad_year int, city_name, city_lat, city_lng, avatar_url, message_to_juniors text, linkedin_url, created_at)
-- `help_tags` (id, slug, label) — seeded
-- `profile_help_tags` (profile_id, tag_id) — many-to-many
-- `wisdom` (id, profile_id FK, category enum, quote text, created_at)
-- `messages` (id, sender_id, recipient_id, body, created_at, read_at)
-- `user_roles` + `app_role` enum + `has_role()` SECURITY DEFINER (per project rules)
+- Drop unused icons / sections in `index.tsx` (no more `MessageCircle`/"How it works" remnants).
+- Remove `src/components/WisdomCard.tsx` if still unreferenced.
 
-RLS:
-- `profiles`, `wisdom`, `help_tags`, `profile_help_tags`: `SELECT TO anon, authenticated` (public directory).
-- INSERT/UPDATE on own profile/wisdom: `auth.uid() = profile_id`.
-- `messages`: SELECT/INSERT where `auth.uid() IN (sender_id, recipient_id)`; recipient can UPDATE `read_at`.
-- `user_roles`: authenticated SELECT only; admin-only writes.
+## Out of scope
 
-Seed migration inserts ~40 realistic alumni profiles across cities (SF, NYC, London, Berlin, Bangalore, Singapore, Toronto, Austin, Seattle, Boston, Amsterdam, Tokyo), ~80 wisdom snippets, full tag set. Names like Sarah Jenkins, Marcus Okafor, Priya Raman, Daniel Levy, Mei Tanaka, etc. Companies: Stripe, Figma, Linear, Anthropic, Notion, McKinsey, Genentech, Two Sigma, Shopify, Atlassian, Spotify, ARM, BCG, Airbnb.
-
-Auto-create `profiles` row on signup via `handle_new_user()` trigger pulling `raw_user_meta_data` (LinkedIn provides name, picture, headline).
-
-### Server Functions
-
-- `getWisdomFeed({ category?, cursor? })` — public publishable-key client, paginated.
-- `getDirectory({ q?, gradYearMin?, gradYearMax?, tagSlugs?, city? })` — public.
-- `getMapPins()` — public, returns aggregated city clusters + alumni snippets.
-- `getAlumnusById(id)` — public.
-- `updateMyProfile(...)` — auth-protected via `requireSupabaseAuth`.
-- `upsertMyWisdom(...)` — auth-protected.
-- `sendMessage({ recipientId, body })` — auth-protected.
-- `geocodeCity(name)` — server-side Nominatim fetch (cached).
-
-### Technical Section
-
-- Stack: TanStack Start + React 19 + Tailwind v4, Lovable Cloud (Supabase) for DB/auth, Framer Motion, Leaflet + react-leaflet + leaflet.markercluster, Lucide, TanStack Query (loader `ensureQueryData` + `useSuspenseQuery`).
-- Install: `bun add framer-motion react-leaflet leaflet leaflet.markercluster @types/leaflet`.
-- Leaflet CSS: load via CDN `<link>` in `__root.tsx` head (Tailwind v4 forbids remote `@import` in `styles.css`).
-- Map is client-only (`{ ssr: false }` on `/map` or dynamic import) — Leaflet touches `window`.
-- LinkedIn auth: `supabase.auth.signInWithOAuth({ provider: 'linkedin_oidc', options: { redirectTo: window.location.origin + '/onboarding' } })`. If provider 400s, show a friendly notice that LinkedIn isn't configured yet and link to Cloud auth settings.
-- All `<a href>` for app routes replaced with `<Link>`; each route file has its own `head()` meta (title, description, og:title, og:description).
-- Error/notFound boundaries on every route with a loader; root has `notFoundComponent`.
-- Public routes use the publishable Supabase client for SSR-safe loads. Protected routes live under `/_authenticated`.
-
-### What you'll get at the end
-
-A polished, deployable alumni site with a sage-on-white aesthetic, a real seeded directory, an interactive clustered world map, a masonry wisdom wall, working email + LinkedIn-ready authentication, and a clean onboarding flow — all backed by real tables and RLS.
+- Other routes (`/directory`, `/match`, `/wisdom`, `/alumni/$id`) keep current structure; they inherit the new tokens but no layout changes this pass.
+- No schema or server-function changes.
+- No new data fields.
