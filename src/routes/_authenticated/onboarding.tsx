@@ -5,8 +5,11 @@ import { useEffect, useState } from "react";
 import { getMyProfile, updateMyProfile, upsertMyWisdom } from "@/lib/me.functions";
 import { getHelpTags } from "@/lib/site.functions";
 import { DEPARTMENTS } from "@/lib/departments";
+import { LocationPicker } from "@/components/LocationPicker";
 import { toast } from "sonner";
 import { Loader2, ArrowRight } from "lucide-react";
+
+const STUDENT_ID_RE = /^\d{8}$/;
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({ meta: [{ title: "Complete your profile — Almanac" }] }),
