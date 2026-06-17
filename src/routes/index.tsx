@@ -3,7 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { lazy, Suspense, useMemo } from "react";
 import { getDirectory, getMapPins, getWisdomFeed } from "@/lib/site.functions";
 import { ShufflingAlumni } from "@/components/ShufflingAlumni";
-import { WisdomCard } from "@/components/WisdomCard";
+import { WisdomLetterbox } from "@/components/WisdomLetterbox";
 import { FadeIn } from "@/components/FadeIn";
 import { ArrowRight, Heart, Linkedin, Loader2, MapPin, Users, MessageCircle } from "lucide-react";
 
