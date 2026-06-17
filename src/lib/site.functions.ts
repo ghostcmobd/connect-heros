@@ -143,7 +143,7 @@ export const getAlumnusById = createServerFn({ method: "GET" })
     const { data: profile, error } = await sb
       .from("profiles")
       .select(
-        "id, full_name, headline, role_title, company, grad_year, city_name, city_lat, city_lng, message_to_juniors, avatar_url, linkedin_url, department, profile_help_tags(help_tags(slug,label))"
+        "id, full_name, headline, role_title, company, grad_year, city_name, city_lat, city_lng, message_to_juniors, avatar_url, linkedin_url, department, is_verified, profile_help_tags(help_tags(slug,label))"
       )
       .eq("id", data.id)
       .eq("is_published", true)
