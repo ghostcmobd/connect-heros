@@ -34,8 +34,9 @@ function MapPage() {
         <header className="mb-8 max-w-2xl">
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Where alumni are, right now</h1>
           <p className="mt-3 text-muted-foreground">
-            {total} alumni across {data.length} cities. Click a city pin to see who's there.
+            Alumni mapped across the world. Click a city pin to see who's there.
           </p>
+
         </header>
       </FadeIn>
       <FadeIn delay={0.05}>
