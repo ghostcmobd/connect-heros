@@ -21,7 +21,7 @@ export function SiteFooter() {
             <Link to="/wisdom" className="text-primary-soft hover:text-primary">Wisdom</Link>
             <Link to="/directory" className="text-primary-soft hover:text-primary">Directory</Link>
             <Link to="/map" className="text-primary-soft hover:text-primary">Map</Link>
-            <Link to="/match" className="text-primary-soft hover:text-primary">Match</Link>
+            <Link to="/companies" className="text-primary-soft hover:text-primary">Companies</Link>
             <Link to="/auth" className="text-primary-soft hover:text-primary">Join</Link>
           </nav>
         </div>
