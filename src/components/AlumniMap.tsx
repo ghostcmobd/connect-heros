@@ -94,9 +94,14 @@ function pinSize(count: number) {
   return { w: 28, h: 36, pulse: "" } as const;
 }
 
-// Cute waving cartoon character — sage shirt, friendly face, animated arm
+// Cute waving cartoon character — emerald/gold palette
 function makePinHtml(count: number) {
   const { w, h, pulse } = pinSize(count);
+  const isGold = count >= 6;
+  const shirtTop = isGold ? "#e6c772" : "#0d7a5f";
+  const shirtBot = isGold ? "#a6802e" : "#064e3b";
+  const shirtStroke = isGold ? "#7d5e1e" : "#04332a";
+  const armStroke = isGold ? "#7d5e1e" : "#04332a";
   return `
     <div class="alm-pin" style="width:${w}px;height:${h}px">
       <div class="alm-pin__pulse ${pulse === "lg" ? "alm-pin__pulse--lg" : ""}"></div>
@@ -105,8 +110,8 @@ function makePinHtml(count: number) {
         <svg viewBox="0 0 64 80" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="shirt${count}" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#86a98c"/>
-              <stop offset="100%" stop-color="#4b6b52"/>
+              <stop offset="0%" stop-color="${shirtTop}"/>
+              <stop offset="100%" stop-color="${shirtBot}"/>
             </linearGradient>
             <radialGradient id="head${count}" cx="40%" cy="40%" r="65%">
               <stop offset="0%" stop-color="#fbdec1"/>
@@ -114,54 +119,46 @@ function makePinHtml(count: number) {
             </radialGradient>
           </defs>
 
-          <!-- Legs (short, chibi) -->
+          <!-- Legs -->
           <rect x="26" y="62" width="4.5" height="9" rx="2.25" fill="#2d3b4a"/>
           <rect x="33.5" y="62" width="4.5" height="9" rx="2.25" fill="#2d3b4a"/>
-          <!-- Shoes -->
           <ellipse cx="28.2" cy="72" rx="4" ry="2" fill="#1f2421"/>
           <ellipse cx="35.8" cy="72" rx="4" ry="2" fill="#1f2421"/>
 
-          <!-- Body / round chibi shirt -->
+          <!-- Body -->
           <path d="M19 50 C19 41 24 37 32 37 C40 37 45 41 45 50 L45 60 C45 63 43 64 40 64 L24 64 C21 64 19 63 19 60 Z"
-                fill="url(#shirt${count})" stroke="#34503b" stroke-width="1.2"/>
-          <!-- Subtle shirt highlight -->
+                fill="url(#shirt${count})" stroke="${shirtStroke}" stroke-width="1.2"/>
           <path d="M23 44 C26 41 30 40 32 40" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".35"/>
 
-          <!-- Left arm (resting) -->
-          <path d="M21 48 C18 53 18 58 20 61" stroke="#4b6b52" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <!-- Left arm -->
+          <path d="M21 48 C18 53 18 58 20 61" stroke="${armStroke}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
           <circle cx="20" cy="61" r="2.8" fill="url(#head${count})" stroke="#b88a64" stroke-width=".6"/>
 
-          <!-- Right arm (waving) — pivot at shoulder -->
+          <!-- Right arm (waving) -->
           <g class="alm-pin__arm">
-            <path d="M43 44 C49 36 54 30 55 24" stroke="#4b6b52" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+            <path d="M43 44 C49 36 54 30 55 24" stroke="${armStroke}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
             <circle cx="55" cy="23" r="3.4" fill="url(#head${count})" stroke="#b88a64" stroke-width=".6"/>
-            <path d="M53.5 20.5 L54 18 M55.5 19.8 L56.5 17.8 M57 21 L58.5 20.2" stroke="#b88a64" stroke-width=".7" stroke-linecap="round"/>
+            <path d="M53.5 20.5 L54 18 M55.5 19.8 L56.5 17.8 M57 21 L58.5 20.2" stroke="#c9a84c" stroke-width=".9" stroke-linecap="round"/>
           </g>
 
-          <!-- Head — larger, chibi -->
+          <!-- Head -->
           <circle cx="32" cy="24" r="15" fill="url(#head${count})" stroke="#b88a64" stroke-width=".9"/>
 
-          <!-- Hair cap -->
+          <!-- Hair -->
           <path d="M17.5 22 C17.5 12 24 7 32 7 C40 7 46.5 12 46.5 22 C46.5 19.5 43.5 17 39 17 C36.5 17 35.5 18.5 32 18.5 C28.5 18.5 27.5 17 25 17 C20.5 17 17.5 19.5 17.5 22 Z"
                 fill="#3a2818"/>
-          <!-- Hair highlight -->
           <path d="M22 14 C25 11 28 10 31 10" stroke="#5a4028" stroke-width="1" stroke-linecap="round" fill="none" opacity=".7"/>
-          <!-- Ear -->
           <ellipse cx="18" cy="25" rx="1.4" ry="2.2" fill="#e5b288"/>
 
-          <!-- Eyes (chibi big) -->
+          <!-- Face -->
           <ellipse cx="27" cy="25.5" rx="1.6" ry="2" fill="#1f2421"/>
           <ellipse cx="37" cy="25.5" rx="1.6" ry="2" fill="#1f2421"/>
-          <!-- Eye sparkles -->
           <circle cx="27.5" cy="24.6" r=".55" fill="#ffffff"/>
           <circle cx="37.5" cy="24.6" r=".55" fill="#ffffff"/>
-          <!-- Brows -->
           <path d="M25 22 Q27 21 29 22" stroke="#3a2818" stroke-width=".9" stroke-linecap="round" fill="none"/>
           <path d="M35 22 Q37 21 39 22" stroke="#3a2818" stroke-width=".9" stroke-linecap="round" fill="none"/>
-          <!-- Cheeks -->
           <circle cx="24" cy="30" r="1.8" fill="#f29a85" opacity=".55"/>
           <circle cx="40" cy="30" r="1.8" fill="#f29a85" opacity=".55"/>
-          <!-- Smile -->
           <path d="M28.5 30.5 Q32 33.5 35.5 30.5" stroke="#1f2421" stroke-width="1.2" stroke-linecap="round" fill="none"/>
         </svg>
         <div class="alm-pin__badge">${count}</div>
