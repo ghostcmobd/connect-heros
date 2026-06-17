@@ -1,133 +1,164 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
-import { getWisdomFeed, type WisdomItem } from "@/lib/site.functions";
+import { lazy, Suspense, useMemo } from "react";
+import { getDirectory, getMapPins, getWisdomFeed } from "@/lib/site.functions";
+import { AlumniCard } from "@/components/AlumniCard";
 import { WisdomCard } from "@/components/WisdomCard";
 import { FadeIn } from "@/components/FadeIn";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Linkedin, Loader2, MapPin, Users, MessageCircle } from "lucide-react";
 
-const wisdomQuery = queryOptions({
-  queryKey: ["wisdom", "all"],
-  queryFn: () => getWisdomFeed({ data: {} }),
-});
+const AlumniMap = lazy(() => import("@/components/AlumniMap").then((m) => ({ default: m.AlumniMap })));
+
+const mapQuery = queryOptions({ queryKey: ["map", "pins"], queryFn: () => getMapPins() });
+const directoryQuery = queryOptions({ queryKey: ["directory", "all"], queryFn: () => getDirectory({ data: {} }) });
+const wisdomQuery = queryOptions({ queryKey: ["wisdom", "all"], queryFn: () => getWisdomFeed({ data: {} }) });
 
 export const Route = createFileRoute("/")({
+  ssr: false,
   head: () => ({
     meta: [
-      { title: "Almanac — Real advice from real alumni" },
-      { name: "description", content: "Words of wisdom from alumni who've been exactly where you are. Browse short, honest snippets of career advice." },
-      { property: "og:title", content: "Almanac — Real advice from real alumni" },
-      { property: "og:description", content: "Words of wisdom from alumni who've been exactly where you are." },
+      { title: "Almanac — Connect with alumni from your university" },
+      { name: "description", content: "Find alumni around the world, see what they're working on, and reach out for resume reviews, mock interviews, and coffee chats." },
+      { property: "og:title", content: "Almanac — Connect with alumni from your university" },
+      { property: "og:description", content: "Find alumni, see where they are, and reach out for real help." },
     ],
   }),
   loader: ({ context }) => {
+    context.queryClient.ensureQueryData(mapQuery);
+    context.queryClient.ensureQueryData(directoryQuery);
     context.queryClient.ensureQueryData(wisdomQuery);
   },
   component: Home,
-  errorComponent: ({ error, reset }) => (
-    <div className="mx-auto max-w-md p-12 text-center">
-      <p className="text-sm text-muted-foreground">{error.message}</p>
-      <button onClick={reset} className="mt-4 rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground">Retry</button>
-    </div>
-  ),
 });
 
-const categories: { value: WisdomItem["category"] | "all"; label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "career", label: "Career" },
-  { value: "academics", label: "Academics" },
-  { value: "internships", label: "Internships" },
-  { value: "life", label: "Life" },
-];
-
 function Home() {
-  const { data } = useSuspenseQuery(wisdomQuery);
-  const [cat, setCat] = useState<(typeof categories)[number]["value"]>("all");
-  const filtered = useMemo(() => (cat === "all" ? data : data.filter((d) => d.category === cat)), [cat, data]);
+  const { data: cities } = useSuspenseQuery(mapQuery);
+  const { data: alumni } = useSuspenseQuery(directoryQuery);
+  const { data: wisdom } = useSuspenseQuery(wisdomQuery);
+
+  const totalAlumni = cities.reduce((s, c) => s + c.count, 0);
+  const featured = useMemo(() => alumni.slice(0, 6), [alumni]);
+  const wisdomTeaser = useMemo(() => wisdom.slice(0, 6), [wisdom]);
 
   return (
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/60">
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute -top-40 left-1/3 h-[520px] w-[520px] rounded-full bg-[oklch(0.93_0.05_145)] blur-3xl" />
-          <div className="absolute top-20 right-10 h-[380px] w-[380px] rounded-full bg-[oklch(0.94_0.04_85)] blur-3xl opacity-60" />
+          <div className="absolute -top-40 left-1/4 h-[520px] w-[520px] rounded-full bg-[oklch(0.93_0.05_145)] blur-3xl" />
+          <div className="absolute top-10 right-10 h-[380px] w-[380px] rounded-full bg-[oklch(0.94_0.04_85)] blur-3xl opacity-60" />
         </div>
-        <div className="mx-auto max-w-5xl px-5 py-20 text-center sm:py-28">
-          <FadeIn>
-            <span className="pill mb-5">
-              <Sparkles className="h-3.5 w-3.5" /> The Words of Wisdom Wall
-            </span>
-          </FadeIn>
-          <FadeIn delay={0.05}>
-            <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
-              The advice you wish<br className="hidden sm:block" /> someone told you in <span className="text-primary">first year.</span>
-            </h1>
-          </FadeIn>
-          <FadeIn delay={0.1}>
-            <p className="mx-auto mt-5 max-w-xl text-balance text-base text-muted-foreground sm:text-lg">
-              Honest, short, sometimes blunt notes from alumni — across thirty cities and a hundred careers — written for the student you are right now.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.15}>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/directory" className="btn-press inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground">
-                Browse the directory <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link to="/map" className="btn-press inline-flex items-center rounded-full border border-border bg-background px-5 py-3 text-sm font-medium hover:bg-surface">
-                See the global map
-              </Link>
+        <div className="mx-auto max-w-6xl px-5 pt-16 pb-10 sm:pt-24">
+          <div className="grid items-center gap-10 md:grid-cols-2">
+            <div>
+              <FadeIn>
+                <span className="pill mb-5">
+                  <Users className="h-3.5 w-3.5" /> {totalAlumni}+ alumni across {cities.length} cities
+                </span>
+              </FadeIn>
+              <FadeIn delay={0.05}>
+                <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+                  Talk to an alumnus who's <span className="text-primary">done what you want to do.</span>
+                </h1>
+              </FadeIn>
+              <FadeIn delay={0.1}>
+                <p className="mt-5 max-w-xl text-balance text-base text-muted-foreground sm:text-lg">
+                  Almanac connects current students with university alumni for resume reviews, mock interviews, and honest coffee chats — anywhere in the world.
+                </p>
+              </FadeIn>
+              <FadeIn delay={0.15}>
+                <div className="mt-7 flex flex-wrap items-center gap-3">
+                  <Link to="/directory" className="btn-press inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground">
+                    Browse alumni <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link to="/auth" className="btn-press inline-flex items-center gap-2 rounded-full bg-[#0a66c2] px-5 py-3 text-sm font-medium text-white shadow-sm hover:opacity-95">
+                    <Linkedin className="h-4 w-4" /> Sync with LinkedIn
+                  </Link>
+                </div>
+              </FadeIn>
             </div>
-          </FadeIn>
+
+            <FadeIn delay={0.1}>
+              <div className="soft-card overflow-hidden p-1.5">
+                <div className="h-[360px] overflow-hidden rounded-xl sm:h-[420px]">
+                  <Suspense fallback={<div className="grid h-full place-items-center bg-surface/40"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>}>
+                    <AlumniMap cities={cities} />
+                  </Suspense>
+                </div>
+              </div>
+            </FadeIn>
+          </div>
         </div>
       </section>
 
-      {/* Filter chips */}
-      <section className="mx-auto max-w-7xl px-5 pt-10">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="text-xl font-semibold tracking-tight">{filtered.length} notes from alumni</h2>
-          <div className="hidden flex-wrap items-center gap-1.5 sm:flex">
-            {categories.map((c) => (
-              <button
-                key={c.value}
-                onClick={() => setCat(c.value)}
-                className={`btn-press rounded-full px-3.5 py-1.5 text-sm transition-colors ${
-                  cat === c.value
-                    ? "bg-primary text-primary-foreground"
-                    : "border border-border bg-background text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {c.label}
-              </button>
+      {/* Featured alumni */}
+      <section className="mx-auto max-w-7xl px-5 py-16">
+        <FadeIn>
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Alumni open to chat</h2>
+              <p className="mt-2 max-w-xl text-muted-foreground">Real graduates, real companies, real ways they want to help current students.</p>
+            </div>
+            <Link to="/directory" className="btn-press inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-surface">
+              See all {alumni.length} alumni <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </FadeIn>
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {featured.map((item, i) => (
+            <FadeIn key={item.id} delay={Math.min(i * 0.04, 0.25)}>
+              <AlumniCard item={item} />
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="border-y border-border/60 bg-surface/40">
+        <div className="mx-auto max-w-7xl px-5 py-16">
+          <FadeIn>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">How it works</h2>
+          </FadeIn>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            {[
+              { icon: MapPin, title: "Find alumni near (or far)", body: "Explore the map or directory by city, company, and how they want to help." },
+              { icon: MessageCircle, title: "Reach out, no cold-DM dread", body: "Every alumnus writes what they're open to — resume reviews, mock interviews, coffee chats." },
+              { icon: Linkedin, title: "Alumni: one-click join", body: "Sync your LinkedIn and you're listed in under a minute. No long forms." },
+            ].map((s, i) => (
+              <FadeIn key={s.title} delay={i * 0.05}>
+                <div className="soft-card h-full p-6">
+                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
+                    <s.icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold tracking-tight">{s.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
+                </div>
+              </FadeIn>
             ))}
           </div>
         </div>
-
-        <div className="-mx-1 mt-2 flex gap-1.5 overflow-x-auto pb-2 sm:hidden">
-          {categories.map((c) => (
-            <button
-              key={c.value}
-              onClick={() => setCat(c.value)}
-              className={`btn-press shrink-0 rounded-full px-3.5 py-1.5 text-sm ${
-                cat === c.value ? "bg-primary text-primary-foreground" : "border border-border bg-background text-muted-foreground"
-              }`}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
       </section>
 
-      {/* Masonry */}
-      <section className="mx-auto max-w-7xl px-5 py-10">
-        <motion.div layout className="masonry-3">
-          {filtered.map((item, i) => (
-            <FadeIn key={item.id} delay={Math.min(i * 0.02, 0.3)}>
+      {/* Words of wisdom teaser */}
+      <section className="mx-auto max-w-7xl px-5 py-16">
+        <FadeIn>
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Words of wisdom</h2>
+              <p className="mt-2 max-w-xl text-muted-foreground">Short notes from alumni — the things they wish someone had told them.</p>
+            </div>
+            <Link to="/wisdom" className="btn-press inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-surface">
+              Read the wall <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </FadeIn>
+        <div className="masonry-3">
+          {wisdomTeaser.map((item, i) => (
+            <FadeIn key={item.id} delay={Math.min(i * 0.03, 0.2)}>
               <WisdomCard item={item} />
             </FadeIn>
           ))}
-        </motion.div>
+        </div>
       </section>
     </div>
   );
