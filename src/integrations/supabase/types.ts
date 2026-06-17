@@ -112,6 +112,7 @@ export type Database = {
           city_name: string | null
           company: string | null
           created_at: string
+          department: string | null
           full_name: string
           grad_year: number | null
           headline: string | null
@@ -129,6 +130,7 @@ export type Database = {
           city_name?: string | null
           company?: string | null
           created_at?: string
+          department?: string | null
           full_name?: string
           grad_year?: number | null
           headline?: string | null
@@ -146,6 +148,7 @@ export type Database = {
           city_name?: string | null
           company?: string | null
           created_at?: string
+          department?: string | null
           full_name?: string
           grad_year?: number | null
           headline?: string | null
