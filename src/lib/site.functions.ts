@@ -31,6 +31,7 @@ export type DirectoryItem = {
   company: string | null;
   grad_year: number | null;
   city_name: string | null;
+  department: string | null;
   message_to_juniors: string | null;
   avatar_url: string | null;
   linkedin_url: string | null;
@@ -101,7 +102,7 @@ export const getDirectory = createServerFn({ method: "GET" })
     let query = sb
       .from("profiles")
       .select(
-        "id, full_name, headline, role_title, company, grad_year, city_name, message_to_juniors, avatar_url, linkedin_url, profile_help_tags(help_tags(slug,label))"
+        "id, full_name, headline, role_title, company, grad_year, city_name, department, message_to_juniors, avatar_url, linkedin_url, profile_help_tags(help_tags(slug,label))"
       )
       .eq("is_published", true)
       .order("full_name", { ascending: true });
@@ -122,6 +123,7 @@ export const getDirectory = createServerFn({ method: "GET" })
       company: r.company,
       grad_year: r.grad_year,
       city_name: r.city_name,
+      department: r.department ?? null,
       message_to_juniors: r.message_to_juniors,
       avatar_url: r.avatar_url,
       linkedin_url: r.linkedin_url,
@@ -130,6 +132,19 @@ export const getDirectory = createServerFn({ method: "GET" })
     if (data.tag) mapped = mapped.filter((p) => p.tags.some((t) => t.slug === data.tag));
     return mapped;
   });
+
+export const getDepartments = createServerFn({ method: "GET" }).handler(async (): Promise<string[]> => {
+  const sb = publicClient();
+  const { data, error } = await sb
+    .from("profiles")
+    .select("department")
+    .eq("is_published", true)
+    .not("department", "is", null);
+  if (error) throw error;
+  const set = new Set<string>();
+  for (const r of (data ?? []) as any[]) if (r.department) set.add(r.department);
+  return [...set].sort();
+});
 
 export const getAlumnusById = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
