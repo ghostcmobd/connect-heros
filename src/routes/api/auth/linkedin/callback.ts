@@ -69,7 +69,7 @@ export const Route = createFileRoute("/api/auth/linkedin/callback")({
           return redirectToAuth(url.origin, "LinkedIn did not return an email");
         }
 
-        const fullName = profile.name ?? [profile.given_name, profile.family_name].filter(Boolean).join(" ") || profile.email;
+        const fullName = profile.name ?? ([profile.given_name, profile.family_name].filter(Boolean).join(" ") || profile.email);
         const avatarUrl = profile.picture ?? null;
         const linkedinId = profile.sub;
 
