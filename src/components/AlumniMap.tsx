@@ -45,9 +45,9 @@ function injectStyles() {
   .alm-pin__body { position: relative; width: 100%; height: 100%; filter: drop-shadow(0 6px 8px rgba(31,66,40,.28)); transition: transform .25s cubic-bezier(.2,.7,.2,1); transform-origin: 50% 100%; animation: alm-bob 2.4s ease-in-out infinite; }
   .alm-pin:hover .alm-pin__body { transform: translateY(-2px) scale(1.08); animation-play-state: paused; }
   .alm-pin__body svg { width: 100%; height: 100%; display: block; overflow: visible; }
-  .alm-pin__arm { transform-origin: 32px 30px; animation: alm-wave 1.6s ease-in-out infinite; }
-  .alm-pin:hover .alm-pin__arm { animation-duration: .8s; }
-  .alm-pin__badge { position: absolute; top: -4px; right: -6px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #ffffff; color: #34503b; font-weight: 700; font-size: 10px; line-height: 18px; text-align: center; border: 2px solid #34503b; box-shadow: 0 2px 6px -1px rgba(31,66,40,.35); }
+  .alm-pin__arm { transform-origin: 32px 32px; animation: alm-wave 1.6s ease-in-out infinite; }
+  .alm-pin:hover .alm-pin__arm { animation-duration: .7s; }
+  .alm-pin__badge { position: absolute; top: -3px; right: -4px; min-width: 14px; height: 14px; padding: 0 4px; border-radius: 999px; background: #ffffff; color: #34503b; font-weight: 700; font-size: 9px; line-height: 14px; text-align: center; border: 1.5px solid #34503b; box-shadow: 0 1px 4px rgba(31,66,40,.3); }
   @keyframes alm-pulse {
     0%   { transform: translateX(-50%) scale(.4); opacity: .7; }
     80%  { transform: translateX(-50%) scale(1.6); opacity: 0; }
@@ -89,9 +89,9 @@ function initials(name: string) {
 }
 
 function pinSize(count: number) {
-  if (count >= 6) return { w: 56, h: 72, pulse: "lg" } as const;
-  if (count >= 3) return { w: 48, h: 62, pulse: "" } as const;
-  return { w: 42, h: 54, pulse: "" } as const;
+  if (count >= 6) return { w: 40, h: 52, pulse: "lg" } as const;
+  if (count >= 3) return { w: 34, h: 44, pulse: "" } as const;
+  return { w: 28, h: 36, pulse: "" } as const;
 }
 
 // Cute waving cartoon character — sage shirt, friendly face, animated arm
