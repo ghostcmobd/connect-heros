@@ -83,7 +83,7 @@ function Home() {
 
       {/* 3. Top companies */}
       <section>
-        <SectionHeader eyebrow="Where they work" title="Top companies" />
+        <SectionHeader eyebrow="Where they work" title="Top companies" href="/companies" />
         <TopCompanies alumni={alumni} limit={6} />
       </section>
 

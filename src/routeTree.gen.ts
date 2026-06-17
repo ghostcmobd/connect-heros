@@ -13,6 +13,7 @@ import { Route as WisdomRouteImport } from './routes/wisdom'
 import { Route as MatchRouteImport } from './routes/match'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as DirectoryRouteImport } from './routes/directory'
+import { Route as CompaniesRouteImport } from './routes/companies'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -39,6 +40,11 @@ const MapRoute = MapRouteImport.update({
 const DirectoryRoute = DirectoryRouteImport.update({
   id: '/directory',
   path: '/directory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompaniesRoute = CompaniesRouteImport.update({
+  id: '/companies',
+  path: '/companies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -79,6 +85,7 @@ const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/companies': typeof CompaniesRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
   '/match': typeof MatchRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/companies': typeof CompaniesRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
   '/match': typeof MatchRoute
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/companies': typeof CompaniesRoute
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
   '/match': typeof MatchRoute
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/companies'
     | '/directory'
     | '/map'
     | '/match'
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/companies'
     | '/directory'
     | '/map'
     | '/match'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/companies'
     | '/directory'
     | '/map'
     | '/match'
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  CompaniesRoute: typeof CompaniesRoute
   DirectoryRoute: typeof DirectoryRoute
   MapRoute: typeof MapRoute
   MatchRoute: typeof MatchRoute
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/directory'
       fullPath: '/directory'
       preLoaderRoute: typeof DirectoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/companies': {
+      id: '/companies'
+      path: '/companies'
+      fullPath: '/companies'
+      preLoaderRoute: typeof CompaniesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  CompaniesRoute: CompaniesRoute,
   DirectoryRoute: DirectoryRoute,
   MapRoute: MapRoute,
   MatchRoute: MatchRoute,
