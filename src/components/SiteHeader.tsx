@@ -1,12 +1,13 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Linkedin, LogOut } from "lucide-react";
+import { Linkedin, LogOut, ShieldCheck } from "lucide-react";
 
 export function SiteHeader() {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [userId, setUserId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setUserId(data.session?.user.id ?? null));
@@ -15,6 +16,20 @@ export function SiteHeader() {
     });
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!userId) {
+      setIsAdmin(false);
+      return;
+    }
+    supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [userId]);
 
   const navItems = [
     { to: "/", label: "Home" },
@@ -63,6 +78,14 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           {userId ? (
             <>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="btn-press hidden items-center gap-1.5 rounded-full bg-[color:var(--gold)]/20 px-3 py-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-[color:var(--gold-deep)] hover:bg-[color:var(--gold)]/30 sm:inline-flex"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" /> Admin
+                </Link>
+              )}
               <Link
                 to="/profile"
                 className="btn-press hidden rounded-full border border-[color:var(--gold)]/40 bg-background px-4 py-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] hover:border-[color:var(--gold)] sm:inline-flex"

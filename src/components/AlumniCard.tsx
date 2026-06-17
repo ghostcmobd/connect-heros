@@ -1,6 +1,7 @@
 import type { DirectoryItem } from "@/lib/site.functions";
 import { Link } from "@tanstack/react-router";
 import { MapPin, ExternalLink, ArrowRight } from "lucide-react";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 
 export function AlumniCard({ item }: { item: DirectoryItem }) {
   const initials = item.full_name
@@ -15,7 +16,10 @@ export function AlumniCard({ item }: { item: DirectoryItem }) {
           {initials}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="font-display truncate text-lg font-black leading-tight">{item.full_name}</h3>
+          <h3 className="font-display flex items-center gap-1.5 truncate text-lg font-black leading-tight">
+            <span className="truncate">{item.full_name}</span>
+            {item.is_verified && <VerifiedBadge />}
+          </h3>
           <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--gold-deep)]">
             {item.role_title}{item.company ? ` @ ${item.company}` : ""}
           </p>

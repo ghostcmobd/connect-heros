@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getAlumnusById } from "@/lib/site.functions";
 import { FadeIn } from "@/components/FadeIn";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { ExternalLink, MapPin, Quote, ArrowLeft } from "lucide-react";
 
 const alumnusQuery = (id: string) =>
@@ -58,7 +59,10 @@ function AlumnusPage() {
               {initials}
             </div>
             <div className="min-w-0 flex-1">
-              <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{p.full_name}</h1>
+              <h1 className="flex flex-wrap items-center gap-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+                {p.full_name}
+                {p.is_verified && <VerifiedBadge size="md" />}
+              </h1>
               <p className="mt-1 text-muted-foreground">{p.headline ?? `${p.role_title} at ${p.company}`}</p>
               <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{p.city_name ?? "—"}</span>

@@ -35,6 +35,7 @@ export type DirectoryItem = {
   message_to_juniors: string | null;
   avatar_url: string | null;
   linkedin_url: string | null;
+  is_verified: boolean;
   tags: { slug: string; label: string }[];
 };
 
@@ -102,7 +103,7 @@ export const getDirectory = createServerFn({ method: "GET" })
     let query = sb
       .from("profiles")
       .select(
-        "id, full_name, headline, role_title, company, grad_year, city_name, department, message_to_juniors, avatar_url, linkedin_url, profile_help_tags(help_tags(slug,label))"
+        "id, full_name, headline, role_title, company, grad_year, city_name, department, message_to_juniors, avatar_url, linkedin_url, is_verified, profile_help_tags(help_tags(slug,label))"
       )
       .eq("is_published", true)
       .order("full_name", { ascending: true });
@@ -127,6 +128,7 @@ export const getDirectory = createServerFn({ method: "GET" })
       message_to_juniors: r.message_to_juniors,
       avatar_url: r.avatar_url,
       linkedin_url: r.linkedin_url,
+      is_verified: !!r.is_verified,
       tags: (r.profile_help_tags ?? []).map((p: any) => p.help_tags).filter(Boolean),
     }));
     if (data.tag) mapped = mapped.filter((p) => p.tags.some((t) => t.slug === data.tag));
@@ -141,7 +143,7 @@ export const getAlumnusById = createServerFn({ method: "GET" })
     const { data: profile, error } = await sb
       .from("profiles")
       .select(
-        "id, full_name, headline, role_title, company, grad_year, city_name, city_lat, city_lng, message_to_juniors, avatar_url, linkedin_url, department, profile_help_tags(help_tags(slug,label))"
+        "id, full_name, headline, role_title, company, grad_year, city_name, city_lat, city_lng, message_to_juniors, avatar_url, linkedin_url, department, is_verified, profile_help_tags(help_tags(slug,label))"
       )
       .eq("id", data.id)
       .eq("is_published", true)

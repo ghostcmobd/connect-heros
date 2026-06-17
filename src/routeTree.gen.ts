@@ -21,6 +21,7 @@ import { Route as AlumniIdRouteImport } from './routes/alumni.$id'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiAuthLinkedinStartRouteImport } from './routes/api/auth/linkedin/start'
 import { Route as ApiAuthLinkedinCallbackRouteImport } from './routes/api/auth/linkedin/callback'
 
@@ -83,6 +84,11 @@ const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiAuthLinkedinStartRoute = ApiAuthLinkedinStartRouteImport.update({
   id: '/api/auth/linkedin/start',
   path: '/api/auth/linkedin/start',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
   '/wisdom': typeof WisdomRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
   '/wisdom': typeof WisdomRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/directory': typeof DirectoryRoute
   '/map': typeof MapRoute
   '/wisdom': typeof WisdomRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/messages': typeof AuthenticatedMessagesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/directory'
     | '/map'
     | '/wisdom'
+    | '/admin'
     | '/messages'
     | '/onboarding'
     | '/profile'
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/directory'
     | '/map'
     | '/wisdom'
+    | '/admin'
     | '/messages'
     | '/onboarding'
     | '/profile'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/directory'
     | '/map'
     | '/wisdom'
+    | '/_authenticated/admin'
     | '/_authenticated/messages'
     | '/_authenticated/onboarding'
     | '/_authenticated/profile'
@@ -289,6 +301,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMessagesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/auth/linkedin/start': {
       id: '/api/auth/linkedin/start'
       path: '/api/auth/linkedin/start'
@@ -307,12 +326,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedMessagesRoute: AuthenticatedMessagesRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
