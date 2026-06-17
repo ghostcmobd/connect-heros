@@ -121,6 +121,7 @@ export type Database = {
           linkedin_url: string | null
           message_to_juniors: string | null
           role_title: string | null
+          student_id: string | null
           updated_at: string
         }
         Insert: {
@@ -139,6 +140,7 @@ export type Database = {
           linkedin_url?: string | null
           message_to_juniors?: string | null
           role_title?: string | null
+          student_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -157,6 +159,7 @@ export type Database = {
           linkedin_url?: string | null
           message_to_juniors?: string | null
           role_title?: string | null
+          student_id?: string | null
           updated_at?: string
         }
         Relationships: []
