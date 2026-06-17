@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { getMyProfile, updateMyProfile, upsertMyWisdom } from "@/lib/me.functions";
 import { getHelpTags } from "@/lib/site.functions";
+import { DEPARTMENTS } from "@/lib/departments";
 import { toast } from "sonner";
 import { Loader2, ArrowRight } from "lucide-react";
 
@@ -31,6 +32,8 @@ function Onboarding() {
     city_name: "",
     message_to_juniors: "",
     linkedin_url: "",
+    department: "",
+    student_id: "",
   });
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [wisdom, setWisdom] = useState("");
@@ -48,6 +51,8 @@ function Onboarding() {
         city_name: m.city_name ?? "",
         message_to_juniors: m.message_to_juniors ?? "",
         linkedin_url: m.linkedin_url ?? "",
+        department: m.department ?? "",
+        student_id: m.student_id ?? "",
       });
       setSelectedTags((m.profile_help_tags ?? []).map((p: any) => p.help_tags?.slug).filter(Boolean));
     }
@@ -58,6 +63,14 @@ function Onboarding() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.department) {
+      toast.error("Please select your department");
+      return;
+    }
+    if (!form.student_id.trim()) {
+      toast.error("Please enter your Student ID");
+      return;
+    }
     setBusy(true);
     try {
       // Geocode city via Nominatim from the browser (no key required)
@@ -87,6 +100,8 @@ function Onboarding() {
           city_lng: lng,
           message_to_juniors: form.message_to_juniors || null,
           linkedin_url: form.linkedin_url || null,
+          department: form.department || null,
+          student_id: form.student_id.trim() || null,
           tag_slugs: selectedTags,
         },
       });
@@ -113,6 +128,29 @@ function Onboarding() {
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Field label="Full name" required value={form.full_name} onChange={(v) => setForm((f) => ({ ...f, full_name: v }))} />
+          <Field label="Student ID" required value={form.student_id} onChange={(v) => setForm((f) => ({ ...f, student_id: v }))} placeholder="e.g. 18101234" />
+        </div>
+
+        <label className="block">
+          <span className="text-sm font-medium">Department <span className="text-destructive">*</span></span>
+          <select
+            required
+            value={form.department}
+            onChange={(e) => setForm((f) => ({ ...f, department: e.target.value }))}
+            className="mt-1.5 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
+          >
+            <option value="">Select your program…</option>
+            {Object.entries(DEPARTMENTS).map(([group, items]) => (
+              <optgroup key={group} label={group}>
+                {items.map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </label>
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Field label="Class year" value={form.grad_year} onChange={(v) => setForm((f) => ({ ...f, grad_year: v }))} placeholder="2022" />
           <Field label="Role" value={form.role_title} onChange={(v) => setForm((f) => ({ ...f, role_title: v }))} placeholder="Product Designer" />
           <Field label="Company" value={form.company} onChange={(v) => setForm((f) => ({ ...f, company: v }))} placeholder="Stripe" />
