@@ -3,7 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { lazy, Suspense, useMemo } from "react";
 import { getDirectory, getMapPins, getWisdomFeed } from "@/lib/site.functions";
 import { ShufflingAlumni } from "@/components/ShufflingAlumni";
-import { WisdomCard } from "@/components/WisdomCard";
+import { WisdomLetterbox } from "@/components/WisdomLetterbox";
 import { FadeIn } from "@/components/FadeIn";
 import { ArrowRight, Heart, Linkedin, Loader2, MapPin, Users, MessageCircle } from "lucide-react";
 
@@ -37,7 +37,7 @@ function Home() {
   const { data: wisdom } = useSuspenseQuery(wisdomQuery);
 
   const totalAlumni = cities.reduce((s, c) => s + c.count, 0);
-  const wisdomTeaser = useMemo(() => wisdom.slice(0, 6), [wisdom]);
+  
 
   return (
     <div>
@@ -146,13 +146,9 @@ function Home() {
             </Link>
           </div>
         </FadeIn>
-        <div className="masonry-3">
-          {wisdomTeaser.map((item, i) => (
-            <FadeIn key={item.id} delay={Math.min(i * 0.03, 0.2)}>
-              <WisdomCard item={item} />
-            </FadeIn>
-          ))}
-        </div>
+        <FadeIn>
+          <WisdomLetterbox items={wisdom} />
+        </FadeIn>
       </section>
     </div>
   );
