@@ -78,8 +78,12 @@ function Directory() {
             className="w-full rounded-full border border-border bg-background px-4 py-2.5 text-sm outline-none sm:w-56"
           >
             <option value="">All departments</option>
-            {departments.map((d) => (
-              <option key={d} value={d}>{d}</option>
+            {Object.entries(DEPARTMENTS).map(([group, items]) => (
+              <optgroup key={group} label={group}>
+                {items.map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </optgroup>
             ))}
           </select>
           <input
